@@ -5,7 +5,11 @@ from string import ascii_lowercase
 
 
 def generate(substrings_filename, text_filename):
-    yield ["test", "dvajdi_test"]
+    with open(text_filename) as fin_text, open(substrings_filename) as fin_substrings:
+        text = fin_text.read()
+        substrings = filter(lambda x: len(x), fin_substrings.read().split("\n"))
+    for substring in substrings:
+        yield [substring, text]
 
 
 def test_generate_checks_if_completes_correctly_into_batches():
