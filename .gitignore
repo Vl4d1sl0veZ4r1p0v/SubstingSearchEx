@@ -1,0 +1,17 @@
+##########
+# Python #
+##########
+*__pycache__*
+*.pytest_cache*
+*.ipynb_checkpoints*
+
+##########
+# Git    #
+##########
+*.git
+
+
+#########
+# IDE   #
+#########
+*.idea
