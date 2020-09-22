@@ -1,5 +1,5 @@
 from time import time
-from typing import Sequence, Tuple
+from typing import Sequence
 
 
 def performance_testing(pattern: str, data: Sequence) -> list:
