@@ -1,8 +1,6 @@
-import pytest
 from algorithms import boyer_moore_algorithm, z_function, prefix_function
-from algorithms import Rabin_Karp_algorithm
-from data import data_best
-
+from algorithms import rabin_karp_algorithm
+from data_loaders import data_best
 
 pattern = 'sdafasdf'
 testing_data = data_best.generate(5)
@@ -21,7 +19,7 @@ def test_prefix_function():
 
 
 def test_Rabin_Karp_algorithm():
-    assert isinstance(Rabin_Karp_algorithm.performance_testing(pattern, testing_data), list)
+    assert isinstance(rabin_karp_algorithm.performance_testing(pattern, testing_data), list)
 
 
 def main():

@@ -1,6 +1,10 @@
 from time import time
 from typing import Sequence
 
+#Need to write a test
+def check_results(occurences, reference_occurences):
+    print("OK")
+
 
 def performance_testing(data: Sequence) -> list:
     result = []
