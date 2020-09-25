@@ -2,13 +2,15 @@ from time import time
 from typing import Sequence
 
 
-def performance_testing(pattern: str, data: Sequence) -> list:
-    """This finction returns list of times like O(n+m) by complexity of algirithm."""
+def performance_testing(data: Sequence, tests_count: int) -> list:
     result = []
-    for text in data:
-        text = pattern + '#' + text
-        enters, performance_time = prefix(pattern, text)
-        result.append(performance_time)
+    for batch in data:
+        times_of_batch = []
+        batch[1] = batch[0] + '#' + batch[1]
+        for _ in range(tests_count):
+            occurrences, performance_time = prefix(batch[0], batch[1])
+            times_of_batch.append(performance_time)
+        result.append(times_of_batch)
     return result
 
 

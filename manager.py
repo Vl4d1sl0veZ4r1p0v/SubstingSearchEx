@@ -24,6 +24,7 @@ def check_arguments_first_experiment(tests_count,
             and os.path.isfile(text_filename) \
             and 1 <= maxlength <= 100:
         return True
+    print("Check failed")
     return False
 
 
@@ -41,12 +42,12 @@ def first_experiment(parsed_args):
             maxlength,
     ):
         algorithm_tester = globals()[algorithm_name].performance_testing
-        results = []
-        for _ in range(tests_count):
-            results.append(algorithm_tester(data_best. \
-                                            generate(max_lenght=maxlength,
-                                                     substring=substring,
-                                                     text_filename=text_filename)))
+        results = algorithm_tester(data_best.
+                                   generate(max_lenght=maxlength,
+                                            substring=substring,
+                                            text_filename=text_filename),
+                                   tests_count,
+                                   )
         results = np.array(results)
         return results
 
@@ -83,12 +84,15 @@ def test_first_experiment_works():
                                      "bruteforce",
                                      "./data/Texts/Normal/INP_TEXT",
                                      '-m',
-                                     '42',
+                                     '2',
                                      '-s',
                                      "tree"
                                      ])
     results = first_experiment(parsed_args=parsed_args)
-    assert results.shape == (5, 21)
+    mask = np.isfinite(results).all(axis=1)
+    used_indices = np.where(mask)[0]
+    results = results[used_indices]
+    assert results.shape == (int(2 * 2661770 / 100 / 1_000), 5)
 
 
 def test_second_experiment_works():
@@ -107,8 +111,20 @@ def test_second_experiment_works():
 
 if __name__ == "__main__":
     parser = create_parser()
-    parsed_args = parser.parse_args(['1', '5', "bruteforce", "./data/Text/Normal/INP_TEXT", '-m', '42', '-s', "tree"])
-    print(parsed_args)
+    parsed_args = parser.parse_args(['1',
+                                     '5',
+                                     "bruteforce",
+                                     "./data/Texts/Normal/INP_TEXT",
+                                     '-m',
+                                     '10',
+                                     '-s',
+                                     "tree",
+                                     ])
     experiments_list = [first_experiment, second_experiment]
     if 1 <= parsed_args.n <= len(experiments_list):
-        experiments_list[parsed_args.n]()
+        results = experiments_list[parsed_args.n - 1](parsed_args=parsed_args)
+        print(results.shape)
+        mask = np.isfinite(results).all(axis=1)
+        used_indices = np.where(mask)[0]
+        results = results[used_indices]
+        print(results)

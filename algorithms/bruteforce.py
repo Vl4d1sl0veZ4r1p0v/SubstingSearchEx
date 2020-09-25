@@ -1,16 +1,20 @@
 from time import time
 from typing import Sequence
 
-#Need to write a test
+
+# Need to write a test
 def check_results(occurences, reference_occurences):
     print("OK")
 
 
-def performance_testing(data: Sequence) -> list:
+def performance_testing(data: Sequence, tests_count: int) -> list:
     result = []
     for batch in data:
-        occurrences, performance_time = bruteforce(batch[0], batch[1])
-        result.append(performance_time)
+        times_of_batch = []
+        for _ in range(tests_count):
+            occurrences, performance_time = bruteforce(batch[0], batch[1])
+            times_of_batch.append(performance_time)
+        result.append(times_of_batch)
     return result
 
 

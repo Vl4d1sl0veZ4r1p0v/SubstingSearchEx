@@ -5,9 +5,11 @@ from string import ascii_lowercase
 
 
 def generate(substrings_filename, text_filename):
-    with open(text_filename) as fin_text, open(substrings_filename) as fin_substrings:
+    with open(text_filename) as fin_text, \
+            open(substrings_filename) as fin_substrings:
         text = fin_text.read()
-        substrings = filter(lambda x: len(x), fin_substrings.read().split("\n"))
+        substrings = filter(lambda x: len(x),
+                            fin_substrings.read().split("\n"))
     for substring in substrings:
         yield [substring, text]
 
@@ -25,7 +27,8 @@ def test_generate_checks_if_completes_correctly_into_batches():
 
     with tf.TemporaryDirectory() as tmp_dir_name:
         tmp_text_file_name = os.path.join(tmp_dir_name, "text_file.txt")
-        tmp_substrings_file_name = os.path.join(tmp_dir_name, "substrings_file.txt")
+        tmp_substrings_file_name = os.path.join(tmp_dir_name,
+                                                "substrings_file.txt")
         with open(tmp_text_file_name, 'w') as fout:
             fout.write(text)
         with open(tmp_substrings_file_name, 'w') as fout:
@@ -37,5 +40,3 @@ def test_generate_checks_if_completes_correctly_into_batches():
             text_filename=tmp_text_file_name,
         ))
     assert batches == [[substring, text] for substring in substrings]
-
-

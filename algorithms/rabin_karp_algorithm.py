@@ -2,12 +2,14 @@ from time import time
 from typing import Sequence, Tuple
 
 
-def performance_testing(pattern: str, data: Sequence) -> list:
-    """This function returns list of times like O(n+m) by complexity of algorithm."""
+def performance_testing(data: Sequence, tests_count: int) -> list:
     result = []
-    for text in data:
-        enters, performance_time = rabin_karp(pattern, text)
-        result.append(performance_time)
+    for batch in data:
+        times_of_batch = []
+        for _ in range(tests_count):
+            occurrences, performance_time = rabin_karp(batch[0], batch[1])
+            times_of_batch.append(performance_time)
+        result.append(times_of_batch)
     return result
 
 
@@ -37,7 +39,7 @@ def rabin_karp(pattern: str, query: str,
         i += 1
         if i <= len(query) - len(pattern):
             text_hash = limit + query_hash
-            text_hash -= (ord(query[i - 1]) * base ** (len(pattern) - 1)) % limit
+            text_hash -= (ord(query[i-1]) * base**(len(pattern) - 1)) % limit
             text_hash *= base
             text_hash %= limit
             text_hash += ord(query[i + len(pattern) - 1]) % limit

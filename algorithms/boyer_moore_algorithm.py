@@ -2,13 +2,16 @@ from time import time
 from typing import Sequence, Tuple
 
 
-def performance_testing(pattern: str, data: Sequence) -> list:
-    """This function returns list of times
-    like O(n+m) by complexity of algorithm."""
+def performance_testing(data: Sequence, tests_count: int) -> list:
     result = []
-    for text in data:
-        enters, performance_time = boyer_moore_search(pattern, text)
-        result.append(performance_time)
+    for batch in data:
+        times_of_batch = []
+        for _ in range(tests_count):
+            occurrences, performance_time = boyer_moore_search(
+                batch[0], batch[1]
+            )
+            times_of_batch.append(performance_time)
+        result.append(times_of_batch)
     return result
 
 

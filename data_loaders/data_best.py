@@ -7,17 +7,16 @@ from string import ascii_lowercase
 def generate(max_lenght: int, substring: str, text_filename: str):
     with open(text_filename, 'r') as fin:
         text = fin.read()
-        max_amount = int(max_lenght * len(text) / 100)
-        for i in range(1, max_amount, 2):
-            print(i)
-            amount = i * 10_000
+        max_amount = int(max_lenght * len(text) / 100 / 1_000)
+        for i in range(1, max_amount + 1):
+            amount = i * 1_000
             text_for_search = text[:amount]
             yield [substring, text_for_search]
 
 
 def test_generate_checks_if_divides_correctly_into_batches():
     import tempfile as tf
-    text_size = 1_000
+    text_size = 10_000
     substring = "test"
     length = 42
     text = ''.join([choice(ascii_lowercase) for _ in range(text_size)])
@@ -30,4 +29,7 @@ def test_generate_checks_if_divides_correctly_into_batches():
             substring=substring,
             text_filename=tmp_file_name,
         ))
-    assert batches == [[substring, text[:10_000 * i]] for i in range(1, int(text_size * length / 100), 2)]
+    assert batches == [
+        [substring, text[:1_000 * i]]
+        for i in range(1, int(text_size * length / 100 / 1_000) + 1)
+    ]
