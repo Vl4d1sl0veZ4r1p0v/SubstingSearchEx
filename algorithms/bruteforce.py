@@ -8,8 +8,8 @@ def check_results(occurences, reference_occurences):
 
 def performance_testing(data: Sequence) -> list:
     result = []
-    for pattern, text in data:
-        occurrences, performance_time = bruteforce(pattern, text)
+    for batch in data:
+        occurrences, performance_time = bruteforce(batch[0], batch[1])
         result.append(performance_time)
     return result
 

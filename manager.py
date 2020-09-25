@@ -1,8 +1,12 @@
 import argparse
 import numpy as np
+import os
 import pytest
 import sys
-import algorithms
+from algorithms import boyer_moore_algorithm, bruteforce
+from algorithms import prefix_function, rabin_karp_algorithm
+from algorithms import z_function
+from data_loaders import data_best
 from statisticians import plotters
 
 
@@ -14,14 +18,20 @@ def check_arguments_first_experiment(tests_count,
                                      text_filename,
                                      maxlength,
                                      ):
+    if 1 <= tests_count \
+            and algorithm in globals() \
+            and len(substring) \
+            and os.path.isfile(text_filename) \
+            and 1 <= maxlength <= 100:
+        return True
     return False
 
 
 def first_experiment(parsed_args):
-    tests_count = parsed_args.count
-    algorithm_name = parsed_args.algorithm_name
+    tests_count = parsed_args.c
+    algorithm_name = parsed_args.a
+    text_filename = parsed_args.t
     substring = parsed_args.substring
-    text_filename = parsed_args.text_filename
     maxlength = parsed_args.maxlength
     if check_arguments_first_experiment(
             tests_count,
@@ -30,23 +40,22 @@ def first_experiment(parsed_args):
             text_filename,
             maxlength,
     ):
-        algorithm_tester = getattr(algorithms, algorithm_name).performance_testing
-        with open(text_filename, 'rt') as fin:
-            text = fin.read()
-            length = maxlength * 100 / len(text)
-            text = text[:length]
+        algorithm_tester = globals()[algorithm_name].performance_testing
         results = []
         for _ in range(tests_count):
-            results.append(algorithm_tester(substring, text))
+            results.append(algorithm_tester(data_best. \
+                                            generate(max_lenght=maxlength,
+                                                     substring=substring,
+                                                     text_filename=text_filename)))
         results = np.array(results)
-        plotters.complete(results)
+        return results
 
 
 def second_experiment():
     pass
 
 
-def parser_do():
+def create_parser():
     parser = argparse.ArgumentParser(description='Manager of tests',
                                      add_help=True)
     parser.add_argument('n', action='store', type=int)
@@ -64,11 +73,42 @@ def parser_do():
                         help="maximum percentage of text that can be selected")
     parser.add_argument('-S', action='store', dest="substrings_filename",
                         help="path to substrings")
-    return parser.parse_args()
+    return parser
+
+
+def test_first_experiment_works():
+    parser = create_parser()
+    parsed_args = parser.parse_args(['1',
+                                     '5',
+                                     "bruteforce",
+                                     "./data/Texts/Normal/INP_TEXT",
+                                     '-m',
+                                     '42',
+                                     '-s',
+                                     "tree"
+                                     ])
+    results = first_experiment(parsed_args=parsed_args)
+    assert results.shape == (5, 21)
+
+
+def test_second_experiment_works():
+    parser = create_parser()
+    parsed_args = parser.parse_args(['2',
+                                     '5',
+                                     "bruteforce",
+                                     "./data/Texts/Normal/INP_TEXT",
+                                     '-l',
+                                     '4200',
+                                     '-S',
+                                     "data/Texts/Normal/substrings.txt"
+                                     ])
+    assert False
 
 
 if __name__ == "__main__":
-    parsed_args = parser_do()
+    parser = create_parser()
+    parsed_args = parser.parse_args(['1', '5', "bruteforce", "./data/Text/Normal/INP_TEXT", '-m', '42', '-s', "tree"])
+    print(parsed_args)
     experiments_list = [first_experiment, second_experiment]
     if 1 <= parsed_args.n <= len(experiments_list):
         experiments_list[parsed_args.n]()
