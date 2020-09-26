@@ -51,8 +51,9 @@ class Statiscian:
     def make_table(self, running_times: np.array,
                    occurences: list,
                    substrings_lengths: list):
-        headerColor = 'grey'
-        rowEvenColor = 'lightgrey'
+        n = len(occurences)
+        headerColor = 'blue'
+        rowEvenColor = 'lightskyblue'
         rowOddColor = 'white'
 
         fig = go.Figure(data=[go.Table(
@@ -62,7 +63,7 @@ class Statiscian:
                         '<b>Algorithm running time</b>'],
                 line_color='darkslategray',
                 fill_color=headerColor,
-                align=['center', 'center'],
+                align='center',
                 font=dict(color='white', size=12)
             ),
             cells=dict(
@@ -72,17 +73,14 @@ class Statiscian:
                     running_times,
                 ],
                 line_color='darkslategray',
-                # 2-D list of colors for alternating rows
-                fill_color=[[rowOddColor,
-                             rowEvenColor,
-                             rowOddColor,
-                             rowEvenColor,
-                             rowOddColor] * 3],
-                align=['left', 'center'],
-                font=dict(color='darkslategray', size=11)
+                fill_color=[
+                    [[rowEvenColor, rowOddColor][i % 2] for i in range(n)] * 3
+                ],
+                align='center',
+                font=dict(color='black', size=13)
             ))
         ])
-
+        fig.update_layout(width=600, height=600)
         fig.show()
 
     def complete_statistic(self, config: dict):

@@ -204,6 +204,9 @@ if __name__ == "__main__":
                     data = json.load(fin)
                     length_list.append(data["substring_length"])
                     occurences_list.append(data["count_of_occurences"])
-        occurences_list = sorted(occurences_list, key=lambda x: length_list[occurences_list.index(x)])
+        occurences_list = sorted(occurences_list,
+                                 key=lambda x:
+                                 length_list[occurences_list.index(x)])
         length_list.sort()
-        statiscian.make_table(np.mean(results, axis=1), occurences_list, length_list)
+        statiscian.make_table(np.mean(results, axis=1),
+                              occurences_list, length_list)
