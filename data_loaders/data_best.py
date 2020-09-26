@@ -7,9 +7,9 @@ from string import ascii_lowercase
 def generate(max_lenght: int, substring: str, text_filename: str):
     with open(text_filename, 'r') as fin:
         text = fin.read()
-        max_amount = int(max_lenght * len(text) / 100 / 1_000)
+        max_amount = int(max_lenght * len(text) / 100 / 10_000)
         for i in range(1, max_amount + 1):
-            amount = i * 1_000
+            amount = i * 10_000
             text_for_search = text[:amount]
             yield [substring, text_for_search]
 

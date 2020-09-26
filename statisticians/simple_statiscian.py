@@ -24,8 +24,16 @@ class Statiscian:
     def make_plot(self, running_times: np.array,
                   x_label_, y_label_, out_filename):
         means, stds = self.get_prepared_for_plotting(running_times)
-        X = np.arange(running_times.shape[0])
+        X = np.arange(1, running_times.shape[0]+1)
         Y = means
+        lower_bounds = Y - 1 * stds
+        upper_bounds = Y + 1 * stds
+        intervals = [
+            [lower_bounds[i],
+             Y[i],
+             upper_bounds[i]
+             ] for i in range(Y.shape[0])
+        ]
         # fit a line
         k, b = self.approximate_curve(X, Y, self.line)
         fitted_line = X * k + b
@@ -33,16 +41,20 @@ class Statiscian:
         a, b = self.approximate_curve(X, Y, self.hyperbola)
         fitted_hyperbola = X**b * a
         #
-        plt.plot(X, Y, 'g')
-        plt.fill_between(X, Y - 1 * stds, Y + 1 * stds, color='r', alpha=0.50)
-        plt.plot(X, fitted_line, color='blue')
-        plt.plot(X, fitted_hyperbola, color='yellow')
-        plt.legend(('Complexity',
-                    "Approximated 1",
-                    "Approximated 2",
-                    '+/- 3xstd'))
+        plt.boxplot(intervals)
+        line, = plt.plot(X,
+                         fitted_line,
+                         color='blue',
+                         label='Approximated line')
+        hyperbola, = plt.plot(X,
+                              fitted_hyperbola,
+                              color='yellow',
+                              label="Approximated hyperbola")
+        plt.xticks(range(1, len(intervals)+1, len(intervals) // 10),
+                   labels=np.arange(0, len(intervals), len(intervals) // 10))
         plt.ylabel(y_label_)
         plt.xlabel(x_label_)
+        plt.legend(handles=[line, hyperbola])
         plt.savefig(os.path.join("./results", out_filename + '.jpg'),
                     format='jpg',
                     )

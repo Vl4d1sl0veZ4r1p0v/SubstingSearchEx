@@ -176,14 +176,14 @@ def test_second_experiment_works():
 
 if __name__ == "__main__":
     parser = create_parser()
-    parsed_args = parser.parse_args(['2',
+    parsed_args = parser.parse_args(['1',
                                      '5',
                                      "bruteforce",
                                      "./data/Texts/Normal/INP_TEXT",
-                                     '-l',
-                                     '4200',
-                                     '-S',
-                                     "./data/Texts/Normal/Substrings.txt"
+                                     '-m',
+                                     '10',
+                                     '-s',
+                                     "рри"
                                      ])
     experiments_list = [first_experiment, second_experiment]
     if 1 <= parsed_args.n <= len(experiments_list):
@@ -192,7 +192,8 @@ if __name__ == "__main__":
         used_indices = np.where(mask)[0]
         results = results[used_indices]
         statiscian = Statiscian()
-        # statiscian.make_plot(x_label_="Length of input text, letters",
+        # statiscian.make_plot(running_times=results,
+        #                      x_label_="Length of input text, letters",
         #                      y_label_="Time of working, milliseconds",
         #                      out_filename="test")
         dir_name = os.path.dirname(parsed_args.substrings_filename)
