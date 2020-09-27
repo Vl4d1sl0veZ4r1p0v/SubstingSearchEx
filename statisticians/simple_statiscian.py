@@ -34,6 +34,7 @@ class Statiscian:
              upper_bounds[i]
              ] for i in range(Y.shape[0])
         ]
+        n = len(intervals)
         # fit a line
         k, b = self.approximate_curve(X, Y, self.line)
         fitted_line = X * k + b
@@ -42,19 +43,19 @@ class Statiscian:
         fitted_hyperbola = X**b * a
         #
         plt.boxplot(intervals)
-        line, = plt.plot(X,
-                         fitted_line,
-                         color='blue',
-                         label='Approximated line')
-        hyperbola, = plt.plot(X,
-                              fitted_hyperbola,
-                              color='yellow',
-                              label="Approximated hyperbola")
-        plt.xticks(range(1, len(intervals)+1, len(intervals) // 10),
-                   labels=np.arange(0, len(intervals), len(intervals) // 10))
+        # line, = plt.plot(X,
+        #                  fitted_line,
+        #                  color='blue',
+        #                  label='Approximated line')
+        # hyperbola, = plt.plot(X,
+        #                       fitted_hyperbola,
+        #                       color='yellow',
+        #                       label="Approximated hyperbola")
+        plt.xticks(np.arange(1, n+1, n // 10),
+                   labels=np.arange(0, n, n // 10))
         plt.ylabel(y_label_)
         plt.xlabel(x_label_)
-        plt.legend(handles=[line, hyperbola])
+        #plt.legend(handles=[line, hyperbola])
         plt.savefig(os.path.join("./results", out_filename + '.jpg'),
                     format='jpg',
                     )

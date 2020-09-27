@@ -58,11 +58,12 @@ def first_experiment(parsed_args):
             text_filename,
             maxlength,
     ):
-        algorithm_tester = globals()[algorithm_name].performance_testing
+        algorithm_tester = globals()[algorithm_name].performance_testing_occurences_by_length
         results = algorithm_tester(data_best.
                                    generate(maxlength,
                                             substring,
-                                            text_filename),
+                                            text_filename,
+                                            sparce=1000),
                                    tests_count,
                                    )
         results = np.array(results)
@@ -179,11 +180,11 @@ if __name__ == "__main__":
     parsed_args = parser.parse_args(['1',
                                      '5',
                                      "bruteforce",
-                                     "./data/Texts/Normal/INP_TEXT",
+                                     "./data/Texts/Generated/INP_TEXT",
                                      '-m',
-                                     '10',
+                                     '100',
                                      '-s',
-                                     "рри"
+                                     "абра"
                                      ])
     experiments_list = [first_experiment, second_experiment]
     if 1 <= parsed_args.n <= len(experiments_list):
@@ -192,22 +193,27 @@ if __name__ == "__main__":
         used_indices = np.where(mask)[0]
         results = results[used_indices]
         statiscian = Statiscian()
-        # statiscian.make_plot(running_times=results,
-        #                      x_label_="Length of input text, letters",
-        #                      y_label_="Time of working, milliseconds",
-        #                      out_filename="test")
-        dir_name = os.path.dirname(parsed_args.substrings_filename)
-        length_list = []
-        occurences_list = []
-        for substring_file in os.listdir(dir_name):
-            if substring_file.startswith("substring_"):
-                with open(os.path.join(dir_name, substring_file), 'r') as fin:
-                    data = json.load(fin)
-                    length_list.append(data["substring_length"])
-                    occurences_list.append(data["count_of_occurences"])
-        occurences_list = sorted(occurences_list,
-                                 key=lambda x:
-                                 length_list[occurences_list.index(x)])
-        length_list.sort()
-        statiscian.make_table(np.mean(results, axis=1),
-                              occurences_list, length_list)
+        if parsed_args.n == 1:
+            statiscian.make_plot(running_times=results,
+                                 x_label_="Length of input text, letters",
+                                 y_label_="Amount of occurences",
+                                 out_filename="test1")
+        elif parsed_args.n == 2:
+            dir_name = os.path.dirname(parsed_args.substrings_filename)
+            length_list = []
+            occurences_list = []
+            for substring_file in os.listdir(dir_name):
+                if substring_file.startswith("substring_"):
+                    with open(
+                            os.path.join(dir_name, substring_file),
+                            'r',
+                    ) as fin:
+                        data = json.load(fin)
+                        length_list.append(data["substring_length"])
+                        occurences_list.append(data["count_of_occurences"])
+            occurences_list = sorted(occurences_list,
+                                     key=lambda x:
+                                     length_list[occurences_list.index(x)])
+            length_list.sort()
+            statiscian.make_table(np.mean(results, axis=1),
+                                  occurences_list, length_list)

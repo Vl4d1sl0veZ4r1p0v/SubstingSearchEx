@@ -13,6 +13,17 @@ def performance_testing(data: Sequence, tests_count: int) -> list:
     return result
 
 
+def performance_testing_occurences_by_length(data: Sequence, tests_count: int) -> list:
+    result = []
+    for batch in data:
+        occurrences_of_batch = []
+        for _ in range(tests_count):
+            occurrences, performance_time = bruteforce(batch[0], batch[1])
+            occurrences_of_batch.append(len(occurrences))
+        result.append(occurrences_of_batch)
+    return result
+
+
 def bruteforce(pattern: str, query: str) -> list:
     result = []
     start = time()

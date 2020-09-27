@@ -4,12 +4,12 @@ from random import choice
 from string import ascii_lowercase
 
 
-def generate(max_lenght: int, substring: str, text_filename: str):
+def generate(max_lenght: int, substring: str, text_filename: str, sparce: int):
     with open(text_filename, 'r') as fin:
         text = fin.read()
-        max_amount = int(max_lenght * len(text) / 100 / 10_000)
+        max_amount = int(max_lenght * len(text) / 100 / sparce)
         for i in range(1, max_amount + 1):
-            amount = i * 10_000
+            amount = i * sparce
             text_for_search = text[:amount]
             yield [substring, text_for_search]
 
