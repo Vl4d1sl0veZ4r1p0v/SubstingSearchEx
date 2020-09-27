@@ -2,7 +2,6 @@ import argparse
 import json
 import numpy as np
 import os
-import pytest
 
 from algorithms import boyer_moore_algorithm, bruteforce
 from algorithms import prefix_function, rabin_karp_algorithm
@@ -58,7 +57,7 @@ def first_experiment(parsed_args):
             text_filename,
             maxlength,
     ):
-        algorithm_tester = globals()[algorithm_name].performance_testing_occurences_by_length
+        algorithm_tester = globals()[algorithm_name].performance_testing
         results = algorithm_tester(data_best.
                                    generate(maxlength,
                                             substring,
@@ -177,14 +176,14 @@ def test_second_experiment_works():
 
 if __name__ == "__main__":
     parser = create_parser()
-    parsed_args = parser.parse_args(['1',
+    parsed_args = parser.parse_args(['2',
                                      '5',
                                      "bruteforce",
-                                     "./data/Texts/Generated/INP_TEXT",
-                                     '-m',
-                                     '100',
-                                     '-s',
-                                     "абра"
+                                     "./data/Texts/Normal/INP_TEXT",
+                                     '-l',
+                                     '4200',
+                                     '-S',
+                                     "./data/Texts/Normal/Substrings.txt"
                                      ])
     experiments_list = [first_experiment, second_experiment]
     if 1 <= parsed_args.n <= len(experiments_list):
@@ -197,7 +196,7 @@ if __name__ == "__main__":
             statiscian.make_plot(running_times=results,
                                  x_label_="Length of input text, letters",
                                  y_label_="Amount of occurences",
-                                 out_filename="test1")
+                                 out_filename="test3")
         elif parsed_args.n == 2:
             dir_name = os.path.dirname(parsed_args.substrings_filename)
             length_list = []
