@@ -4,13 +4,14 @@ from typing import Sequence
 
 def performance_testing(data: Sequence, tests_count: int) -> list:
     result = []
+    occurrences = []
     for batch in data:
         times_of_batch = []
         for _ in range(tests_count):
             occurrences, performance_time = rabin_karp(batch[0], batch[1])
             times_of_batch.append(performance_time)
         result.append(times_of_batch)
-    return result
+    return result, occurrences
 
 
 def get_new_hash(string_hash: int, string: str, i: int,
@@ -19,12 +20,12 @@ def get_new_hash(string_hash: int, string: str, i: int,
 
 
 def rabin_karp(pattern: str, query: str,
-               base: int = 13, limit: int = int(1e9 + 7)) -> list:
+               base: int = 7, limit: int = int(1e9 + 7)) -> list:
     result = []
     query_hash = 0
     pattern_hash = 0
     start = time()
-    for i in range(len(pattern)):
+    for i in range(min(len(pattern), len(query))):
         query_hash = get_new_hash(query_hash, query, i)
         pattern_hash = get_new_hash(pattern_hash, pattern, i)
     i = 0
@@ -38,11 +39,13 @@ def rabin_karp(pattern: str, query: str,
                     break
         i += 1
         if i <= len(query) - len(pattern):
-            text_hash = limit + query_hash
-            text_hash -= (ord(query[i-1]) * base**(len(pattern) - 1)) % limit
-            text_hash *= base
-            text_hash %= limit
-            text_hash += ord(query[i + len(pattern) - 1]) % limit
-            text_hash %= limit
+            query_hash = limit + query_hash
+            query_hash -= (ord(query[i-1])*base**(len(pattern)-1)) % limit
+            query_hash *= base
+            query_hash %= limit
+            query_hash += ord(query[i + len(pattern) - 1]) % limit
+            query_hash %= limit
+    if query.endswith(pattern) and len(query) > len(pattern):
+        result.append(len(query) - len(pattern))
     end = time()
     return result, end - start

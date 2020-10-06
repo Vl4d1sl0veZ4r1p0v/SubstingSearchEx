@@ -4,6 +4,7 @@ from typing import Sequence
 
 def performance_testing(data: Sequence, tests_count: int) -> list:
     result = []
+    occurrences = []
     for batch in data:
         times_of_batch = []
         batch[1] = batch[0] + '#' + batch[1]
@@ -11,7 +12,7 @@ def performance_testing(data: Sequence, tests_count: int) -> list:
             occurrences, performance_time = prefix(batch[0], batch[1])
             times_of_batch.append(performance_time)
         result.append(times_of_batch)
-    return result
+    return result, occurrences
 
 
 def prefix(pattern: str, query: str) -> list:

@@ -5,6 +5,7 @@ from typing import Sequence, Tuple
 
 def performance_testing(data: Sequence, tests_count: int) -> list:
     result = []
+    occurrences = []
     for batch in data:
         times_of_batch = []
         for _ in range(tests_count):
@@ -13,7 +14,7 @@ def performance_testing(data: Sequence, tests_count: int) -> list:
             )
             times_of_batch.append(performance_time)
         result.append(times_of_batch)
-    return result
+    return result, occurrences
 
 
 def z_array(query: str) -> list:

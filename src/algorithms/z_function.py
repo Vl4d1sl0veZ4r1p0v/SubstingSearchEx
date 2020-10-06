@@ -4,6 +4,7 @@ from typing import Sequence, Tuple
 
 def performance_testing(data: Sequence, tests_count: int) -> list:
     result = []
+    occurrences = []
     for batch in data:
         times_of_batch = []
         batch[1] = batch[0] + '#' + batch[1]
@@ -11,7 +12,7 @@ def performance_testing(data: Sequence, tests_count: int) -> list:
             occurrences, performance_time = z(batch[0], batch[1])
             times_of_batch.append(performance_time)
         result.append(times_of_batch)
-    return result
+    return result, occurrences
 
 
 def z(pattern: str, query: str) -> Tuple:
@@ -31,6 +32,6 @@ def z(pattern: str, query: str) -> Tuple:
             left = i
             right = i + z_list[i] - 1
         if len(pattern) == z_list[i]:
-            result.append(i)
+            result.append(i - len(pattern) - 1)
     end = time()
-    return z_list, end - start
+    return result, end - start

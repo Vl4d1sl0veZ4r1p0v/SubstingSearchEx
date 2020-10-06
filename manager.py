@@ -58,13 +58,13 @@ def first_experiment(parsed_args):
             maxlength,
     ):
         algorithm_tester = globals()[algorithm_name].performance_testing
-        results = algorithm_tester(data_best.
-                                   generate(maxlength,
-                                            substring,
-                                            text_filename,
-                                            sparce=1000),
-                                   tests_count,
-                                   )
+        results, _ = algorithm_tester(data_best.
+                                      generate(maxlength,
+                                               substring,
+                                               text_filename,
+                                               sparce=1000),
+                                      tests_count,
+                                      )
         results = np.array(results)
         return results
 
@@ -108,11 +108,11 @@ def second_experiment(parsed_args):
             length,
         )
         algorithm_tester = globals()[algorithm_name].performance_testing
-        results = algorithm_tester(data_amorotized.
-                                   generate(substrings_filename,
-                                            text_filename),
-                                   tests_count,
-                                   )
+        results, _ = algorithm_tester(data_amorotized.
+                                      generate(substrings_filename,
+                                               text_filename),
+                                      tests_count,
+                                      )
         results = np.array(results)
         return results
 
