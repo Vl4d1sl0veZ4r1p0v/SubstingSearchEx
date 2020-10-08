@@ -1,5 +1,5 @@
 import pytest
-from time import time
+from time import perf_counter
 from typing import Sequence, Tuple
 
 
@@ -77,7 +77,7 @@ def boyer_moore_search(pattern: str, query: str) -> Tuple:
     big_l, small_l_prime = good_suffix_precalc(pattern)
     shift_good_suffix = [get_shift_good_suffix(i, big_l, small_l_prime)
                          for i in range(len(pattern))]
-    start = time()
+    start = perf_counter()
     i = 0
     while i <= len(query) - len(pattern):
         j = len(pattern)
@@ -90,7 +90,7 @@ def boyer_moore_search(pattern: str, query: str) -> Tuple:
         else:
             result.append(i)
             i += max(1, shift_good_suffix[j])
-    end = time()
+    end = perf_counter()
     return result, end - start
 
 

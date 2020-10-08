@@ -1,4 +1,4 @@
-from time import time
+from time import perf_counter
 from typing import Sequence
 
 
@@ -24,7 +24,7 @@ def rabin_karp(pattern: str, query: str,
     result = []
     query_hash = 0
     pattern_hash = 0
-    start = time()
+    start = perf_counter()
     for i in range(min(len(pattern), len(query))):
         query_hash = get_new_hash(query_hash, query, i)
         pattern_hash = get_new_hash(pattern_hash, pattern, i)
@@ -47,5 +47,5 @@ def rabin_karp(pattern: str, query: str,
             query_hash %= limit
     if query.endswith(pattern) and len(query) > len(pattern):
         result.append(len(query) - len(pattern))
-    end = time()
+    end = perf_counter()
     return result, end - start

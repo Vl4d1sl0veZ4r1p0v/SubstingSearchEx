@@ -10,8 +10,6 @@ from data_loaders import data_best, data_amorotized
 from statisticians.simple_statiscian import Statiscian
 
 
-# 892
-
 def check_arguments_first_experiment(tests_count,
                                      algorithm,
                                      substring,

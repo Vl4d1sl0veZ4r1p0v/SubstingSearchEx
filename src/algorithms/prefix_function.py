@@ -1,4 +1,4 @@
-from time import time
+from time import perf_counter
 from typing import Sequence
 
 
@@ -20,7 +20,7 @@ def prefix(pattern: str, query: str) -> list:
     tuple of entres and time in milliseconds."""
     result = []
     p_list = [0] * len(query)
-    start = time()
+    start = perf_counter()
     for i in range(1, len(query)):
         temp = p_list[i - 1]
         while temp > 0 and query[i] != query[temp]:
@@ -31,5 +31,5 @@ def prefix(pattern: str, query: str) -> list:
             p_list[i] = 0
         if p_list[i] == len(pattern):
             result.append(i - 2 * len(pattern))
-    end = time()
+    end = perf_counter()
     return result, end - start

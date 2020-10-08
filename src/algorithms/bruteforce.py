@@ -1,4 +1,4 @@
-from time import time
+from time import perf_counter
 from typing import Sequence
 
 
@@ -28,7 +28,7 @@ def performance_testing_occurences_by_length(data: Sequence,
 
 def bruteforce(pattern: str, query: str) -> list:
     result = []
-    start = time()
+    start = perf_counter()
     current_progress = 0
     for i in range(len(query)):
         if query[i] == pattern[current_progress]:
@@ -36,5 +36,5 @@ def bruteforce(pattern: str, query: str) -> list:
             if current_progress == len(pattern):
                 result.append(i - len(pattern) + 1)
                 current_progress = 0
-    end = time()
+    end = perf_counter()
     return result, end - start

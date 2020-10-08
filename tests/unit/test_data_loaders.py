@@ -33,6 +33,7 @@ def test_generate_checks_if_completes_correctly_into_batches():
         ))
     assert batches == [[substring, text] for substring in substrings]
 
+
 def test_generate_checks_if_divides_correctly_into_batches():
     import tempfile as tf
     text_size = 10_000

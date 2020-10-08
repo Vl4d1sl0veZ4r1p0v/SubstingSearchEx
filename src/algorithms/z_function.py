@@ -1,4 +1,4 @@
-from time import time
+from time import perf_counter
 from typing import Sequence, Tuple
 
 
@@ -21,7 +21,7 @@ def z(pattern: str, query: str) -> Tuple:
     result = []
     left, right = 0, 0
     z_list = [0] * len(query)
-    start = time()
+    start = perf_counter()
     for i in range(1, len(query)):
         if i <= right:
             z_list[i] = min(right - i + 1, z_list[i - left])
@@ -33,5 +33,5 @@ def z(pattern: str, query: str) -> Tuple:
             right = i + z_list[i] - 1
         if len(pattern) == z_list[i]:
             result.append(i - len(pattern) - 1)
-    end = time()
+    end = perf_counter()
     return result, end - start

@@ -1,4 +1,4 @@
-from time import time
+from time import perf_counter
 from typing import Sequence
 
 
@@ -107,13 +107,13 @@ class AhoCorasick:
 
 def aho_corasick(pattern: str, query: str):
     results = []
-    start = time()
+    start = perf_counter()
     ahck = AhoCorasick()
     if len(pattern) <= len(query):
         ahck.bohr_init()
         ahck.add_string_to_bohr(pattern)
         results = ahck.find_all_positions(query)
-    end = time()
+    end = perf_counter()
     return results, end - start
 
 
