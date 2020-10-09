@@ -2,6 +2,7 @@ import argparse
 import json
 import numpy as np
 import os
+import pytest
 
 from algorithms import boyer_moore_algorithm, bruteforce
 from algorithms import prefix_function, rabin_karp_algorithm
@@ -11,13 +12,15 @@ from statisticians.simple_statiscian import Statiscian
 
 
 def check_arguments_first_experiment(tests_count,
-                                     algorithm,
+                                     algorithms_,
                                      substring,
                                      text_filename,
                                      maxlength,
                                      ):
+    algorithms_conclusion = all([algorithm in globals()
+                                 for algorithm in algorithms_])
     if 1 <= tests_count \
-            and algorithm in globals() \
+            and algorithms_conclusion \
             and len(substring) \
             and os.path.isfile(text_filename) \
             and 1 <= maxlength <= 100:
@@ -27,13 +30,15 @@ def check_arguments_first_experiment(tests_count,
 
 
 def check_arguments_second_experiment(tests_count,
-                                      algorithm,
+                                      algorithms_,
                                       text_filename,
                                       substrings_filename,
                                       length,
                                       ):
+    algorithms_conclusion = all([algorithm in globals()
+                                 for algorithm in algorithms_])
     if 1 <= tests_count \
-            and algorithm in globals() \
+            and algorithms_conclusion \
             and os.path.isfile(text_filename) \
             and os.path.isfile(substrings_filename) \
             and 1 <= length:
@@ -44,28 +49,31 @@ def check_arguments_second_experiment(tests_count,
 
 def first_experiment(parsed_args):
     tests_count = parsed_args.c
-    algorithm_name = parsed_args.a
+    algorithms_names = parsed_args.a
     text_filename = parsed_args.t
     substring = parsed_args.substring
     maxlength = parsed_args.maxlength
     if check_arguments_first_experiment(
             tests_count,
-            algorithm_name,
+            algorithms_names,
             substring,
             text_filename,
             maxlength,
     ):
-        algorithm_tester = globals()[algorithm_name].performance_testing
-        results_times, results_memory, _ = \
-            algorithm_tester(data_best.
-                             generate(maxlength,
-                                      substring,
-                                      text_filename,
-                                      sparce=1000),
-                             tests_count,
-                             )
-        results_times = np.array(results_times)
-        results_memory = np.array(results_memory)
+        results_times = []
+        results_memory = []
+        for algorithm in algorithms_names:
+            algorithm_tester = globals()[algorithm].performance_testing
+            results_times_of_algorithm, results_memory_of_algorithm, _ = \
+                algorithm_tester(data_best.
+                                 generate(maxlength,
+                                          substring,
+                                          text_filename,
+                                          sparce=1000),
+                                 tests_count,
+                                 )
+            results_times.append(np.array(results_times_of_algorithm))
+            results_memory.append(np.array(results_memory_of_algorithm))
         return results_times, results_memory
 
 
@@ -91,13 +99,13 @@ def preparation_for_second_experiment(substrings_filename: str,
 
 def second_experiment(parsed_args):
     tests_count = parsed_args.c
-    algorithm_name = parsed_args.a
+    algorithms_names = parsed_args.a
     text_filename = parsed_args.t
     substrings_filename = parsed_args.substrings_filename
     length = parsed_args.length
     if check_arguments_second_experiment(
             tests_count,
-            algorithm_name,
+            algorithms_names,
             text_filename,
             substrings_filename,
             length,
@@ -107,15 +115,18 @@ def second_experiment(parsed_args):
             text_filename,
             length,
         )
-        algorithm_tester = globals()[algorithm_name].performance_testing
-        results_times, results_memory, _ = \
-            algorithm_tester(data_amorotized.
-                             generate(substrings_filename,
-                                      text_filename),
-                             tests_count,
-                             )
-        results_times = np.array(results_times)
-        results_memory = np.array(results_memory)
+        results_times = []
+        results_memory = []
+        for algorithm in algorithms_names:
+            algorithm_tester = globals()[algorithm].performance_testing
+            results_times_of_algorithm, results_memory_of_algorithm, _ = \
+                algorithm_tester(data_amorotized.
+                                 generate(substrings_filename,
+                                          text_filename),
+                                 tests_count,
+                                 )
+            results_times.append(np.array(results_times_of_algorithm))
+            results_memory.append(np.array(results_memory_of_algorithm))
         return results_times, results_memory
 
 
@@ -125,10 +136,10 @@ def create_parser():
     parser.add_argument('n', action='store', type=int)
     parser.add_argument('c', action='store', type=int,
                         help="number of test runs")
-    parser.add_argument('a', action='store',
-                        help="tested algorithm")
     parser.add_argument('t', action='store',
                         help="path to text")
+    parser.add_argument('-a', action='append', default=[],
+                        help="tested algorithms")
     parser.add_argument('-l', action='store', dest="length", type=int,
                         help="maximum text length")
     parser.add_argument('-s', action='store', dest="substring",
@@ -144,64 +155,61 @@ def test_first_experiment_works():
     parser = create_parser()
     parsed_args = parser.parse_args(['1',
                                      '5',
-                                     "bruteforce",
                                      "./data/Texts/Normal/INP_TEXT",
+                                     '-a',
+                                     "bruteforce",
                                      '-m',
                                      '2',
                                      '-s',
                                      "tree"
                                      ])
     results_times, _ = first_experiment(parsed_args=parsed_args)
-    mask = np.isfinite(results_times).all(axis=1)
-    used_indices = np.where(mask)[0]
-    results_times = results_times[used_indices]
-    assert results_times.shape == (int(2 * 2661770 / 100 / 1_000), 5)
+    results_times = np.array(results_times)
+    assert results_times.shape == (1, int(2 * 2661770 / 100 / 1_000), 5)
 
 
 def test_second_experiment_works():
     parser = create_parser()
     parsed_args = parser.parse_args(['2',
                                      '5',
-                                     "bruteforce",
                                      "./data/Texts/Normal/INP_TEXT",
+                                     '-a',
+                                     "bruteforce",
                                      '-l',
                                      '4200',
                                      '-S',
                                      "./data/Texts/Normal/Substrings.txt"
                                      ])
     results_times, _ = second_experiment(parsed_args=parsed_args)
-    mask = np.isfinite(results_times).all(axis=1)
-    used_indices = np.where(mask)[0]
-    results_times = results_times[used_indices]
-    assert results_times.shape == (12, 5)
+    results_times = np.array(results_times)
+    assert results_times.shape == (1, 12, 5)
 
 
 if __name__ == "__main__":
     parser = create_parser()
     parsed_args = parser.parse_args(['1',
                                      '5',
-                                     "bruteforce",
                                      "./data/Texts/Normal/INP_TEXT",
+                                     '-a',
+                                     "bruteforce",
                                      '-m',
                                      '2',
                                      '-s',
-                                     "рри"
+                                     "рри",
+                                     '-a',
+                                     "z_function"
                                      ])
     experiments_list = [first_experiment, second_experiment]
     if 1 <= parsed_args.n <= len(experiments_list):
         results_times, result_memory = \
             experiments_list[parsed_args.n - 1](parsed_args=parsed_args)
-        mask = np.isfinite(results_times).all(axis=1)
-        used_indices = np.where(mask)[0]
-        results_times = results_times[used_indices]
         statiscian = Statiscian()
         if parsed_args.n == 1:
-            statiscian.make_plot_memory_by_length(
-                memory_usages=result_memory,
-                x_label_="Length of input text, letters",
-                y_label_="Used memory, MiB",
-                out_filename="test4"
-            )
+            for i, algorithm in enumerate(parsed_args.a):
+                statiscian.make_plot_memory_by_length(
+                    memory_usages=result_memory[i],
+                    out_filename=algorithm,
+                )
         elif parsed_args.n == 2:
             dir_name = os.path.dirname(parsed_args.substrings_filename)
             length_list = []

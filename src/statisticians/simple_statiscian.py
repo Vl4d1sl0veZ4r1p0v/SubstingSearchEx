@@ -24,11 +24,14 @@ class Statiscian:
     def make_plot_time_by_length(
             self,
             running_times: np.array,
-            x_label_,
+            x_label_="Length of input text, letters",
             y_label_="Time of working, seconds",
-            out_filename="time" + str(datetime.datetime.today())):
+            out_filename="time" + str(datetime.datetime.now())):
         self.make_plot_by_length(
-            running_times, x_label_, y_label_, out_filename
+            usages=running_times,
+            x_label_=x_label_,
+            y_label_=y_label_,
+            out_filename=out_filename
         )
 
     @staticmethod
@@ -78,19 +81,23 @@ class Statiscian:
     def make_plot_memory_by_length(
             self,
             memory_usages: np.array,
-            x_label_,
+            x_label_="Length of input text, letters",
             y_label_="Used memory, MiB",
-            out_filename="memory"+str(datetime.datetime.today())
+            out_filename="memory"+str(datetime.datetime.now())
     ):
         self.make_plot_by_length(
-            memory_usages, x_label_, y_label_, out_filename
+            usages=memory_usages,
+            x_label_=x_label_,
+            y_label_=y_label_,
+            out_filename=out_filename
         )
 
     def make_plot_by_length(self, usages: np.array,
                             y_label_,
-                            out_filename,
-                            x_label_="Length of input text, letters",
+                            x_label_,
+                            out_filename
                             ):
+        fig, ax = plt.subplots(figsize=(9, 6))
         means, stds = self.get_prepared_for_plotting(usages)
         X = np.arange(1, usages.shape[0] + 1)
         Y = means
