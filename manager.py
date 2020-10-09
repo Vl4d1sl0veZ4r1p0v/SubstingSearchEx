@@ -56,15 +56,17 @@ def first_experiment(parsed_args):
             maxlength,
     ):
         algorithm_tester = globals()[algorithm_name].performance_testing
-        results, _ = algorithm_tester(data_best.
-                                      generate(maxlength,
-                                               substring,
-                                               text_filename,
-                                               sparce=1000),
-                                      tests_count,
-                                      )
-        results = np.array(results)
-        return results
+        results_times, results_memory, _ = \
+            algorithm_tester(data_best.
+                             generate(maxlength,
+                                      substring,
+                                      text_filename,
+                                      sparce=1000),
+                             tests_count,
+                             )
+        results_times = np.array(results_times)
+        results_memory = np.array(results_memory)
+        return results_times, results_memory
 
 
 def preparation_for_second_experiment(substrings_filename: str,
@@ -106,13 +108,15 @@ def second_experiment(parsed_args):
             length,
         )
         algorithm_tester = globals()[algorithm_name].performance_testing
-        results, _ = algorithm_tester(data_amorotized.
-                                      generate(substrings_filename,
-                                               text_filename),
-                                      tests_count,
-                                      )
-        results = np.array(results)
-        return results
+        results_times, results_memory, _ = \
+            algorithm_tester(data_amorotized.
+                             generate(substrings_filename,
+                                      text_filename),
+                             tests_count,
+                             )
+        results_times = np.array(results_times)
+        results_memory = np.array(results_memory)
+        return results_times, results_memory
 
 
 def create_parser():
@@ -147,11 +151,11 @@ def test_first_experiment_works():
                                      '-s',
                                      "tree"
                                      ])
-    results = first_experiment(parsed_args=parsed_args)
-    mask = np.isfinite(results).all(axis=1)
+    results_times, _ = first_experiment(parsed_args=parsed_args)
+    mask = np.isfinite(results_times).all(axis=1)
     used_indices = np.where(mask)[0]
-    results = results[used_indices]
-    assert results.shape == (int(2 * 2661770 / 100 / 1_000), 5)
+    results_times = results_times[used_indices]
+    assert results_times.shape == (int(2 * 2661770 / 100 / 1_000), 5)
 
 
 def test_second_experiment_works():
@@ -165,36 +169,39 @@ def test_second_experiment_works():
                                      '-S',
                                      "./data/Texts/Normal/Substrings.txt"
                                      ])
-    results = second_experiment(parsed_args=parsed_args)
-    mask = np.isfinite(results).all(axis=1)
+    results_times, _ = second_experiment(parsed_args=parsed_args)
+    mask = np.isfinite(results_times).all(axis=1)
     used_indices = np.where(mask)[0]
-    results = results[used_indices]
-    assert results.shape == (12, 5)
+    results_times = results_times[used_indices]
+    assert results_times.shape == (12, 5)
 
 
 if __name__ == "__main__":
     parser = create_parser()
-    parsed_args = parser.parse_args(['2',
+    parsed_args = parser.parse_args(['1',
                                      '5',
                                      "bruteforce",
                                      "./data/Texts/Normal/INP_TEXT",
-                                     '-l',
-                                     '4200',
-                                     '-S',
-                                     "./data/Texts/Normal/Substrings.txt"
+                                     '-m',
+                                     '2',
+                                     '-s',
+                                     "рри"
                                      ])
     experiments_list = [first_experiment, second_experiment]
     if 1 <= parsed_args.n <= len(experiments_list):
-        results = experiments_list[parsed_args.n - 1](parsed_args=parsed_args)
-        mask = np.isfinite(results).all(axis=1)
+        results_times, result_memory = \
+            experiments_list[parsed_args.n - 1](parsed_args=parsed_args)
+        mask = np.isfinite(results_times).all(axis=1)
         used_indices = np.where(mask)[0]
-        results = results[used_indices]
+        results_times = results_times[used_indices]
         statiscian = Statiscian()
         if parsed_args.n == 1:
-            statiscian.make_plot(running_times=results,
-                                 x_label_="Length of input text, letters",
-                                 y_label_="Amount of occurences",
-                                 out_filename="test3")
+            statiscian.make_plot_memory_by_length(
+                memory_usages=result_memory,
+                x_label_="Length of input text, letters",
+                y_label_="Used memory, MiB",
+                out_filename="test4"
+            )
         elif parsed_args.n == 2:
             dir_name = os.path.dirname(parsed_args.substrings_filename)
             length_list = []
@@ -212,5 +219,8 @@ if __name__ == "__main__":
                                      key=lambda x:
                                      length_list[occurences_list.index(x)])
             length_list.sort()
-            statiscian.make_table(np.mean(results, axis=1),
-                                  occurences_list, length_list)
+            statiscian.make_table_time_by_many_strings(
+                np.mean(results_times, axis=1),
+                occurences_list,
+                length_list
+            )

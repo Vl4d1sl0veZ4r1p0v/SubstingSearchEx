@@ -1,10 +1,9 @@
+import os
+import datetime
+
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 import plotly.graph_objects as go
-import pytest
-
-
 from scipy.optimize import curve_fit
 
 
@@ -13,7 +12,8 @@ class Statiscian:
     def __init__(self):
         pass
 
-    def get_prepared_for_plotting(self, array: np.array):
+    @staticmethod
+    def get_prepared_for_plotting(array: np.array):
         means = np.zeros(array.shape[0])
         stds = np.zeros(array.shape[0])
         for i in range(array.shape[0]):
@@ -21,10 +21,78 @@ class Statiscian:
             stds[i] = np.std(array[i]) / np.sqrt(array.shape[1])
         return means, stds
 
-    def make_plot(self, running_times: np.array,
-                  x_label_, y_label_, out_filename):
-        means, stds = self.get_prepared_for_plotting(running_times)
-        X = np.arange(1, running_times.shape[0]+1)
+    def make_plot_time_by_length(
+            self,
+            running_times: np.array,
+            x_label_,
+            y_label_="Time of working, seconds",
+            out_filename="time" + str(datetime.datetime.today())):
+        self.make_plot_by_length(
+            running_times, x_label_, y_label_, out_filename
+        )
+
+    @staticmethod
+    def make_table_time_by_many_strings(running_times: np.array,
+                                        occurences: list,
+                                        substrings_lengths: list):
+        n = len(occurences)
+        header_color = 'blue'
+        row_even_color = 'lightskyblue'
+        row_odd_color = 'white'
+
+        fig = go.Figure(data=[go.Table(
+            header=dict(
+                values=['<b>Substring length</b>',
+                        '<b>Amount of occurrences</b>',
+                        '<b>Algorithm running time</b>'],
+                line_color='darkslategray',
+                fill_color=header_color,
+                align='center',
+                font=dict(color='white', size=12)
+            ),
+            cells=dict(
+                values=[
+                    substrings_lengths,
+                    occurences,
+                    running_times,
+                ],
+                line_color='darkslategray',
+                fill_color=[
+                    [
+                        [row_even_color, row_odd_color][i % 2]
+                        for i in range(n)
+                    ] * 3
+                ],
+                align='center',
+                font=dict(color='black', size=13)
+            ))
+        ])
+        fig.update_layout(width=600, height=600)
+        fig.show()
+
+    def complete_statistic(self, config: dict):
+        """Нужна, когда хотим подвести статистику по нескольким алгоритмам:
+         несколько результатов на одном графике или общая сводная таблица."""
+        raise NotImplementedError()
+
+    def make_plot_memory_by_length(
+            self,
+            memory_usages: np.array,
+            x_label_,
+            y_label_="Used memory, MiB",
+            out_filename="memory"+str(datetime.datetime.today())
+    ):
+        self.make_plot_by_length(
+            memory_usages, x_label_, y_label_, out_filename
+        )
+
+    def make_plot_by_length(self, usages: np.array,
+                            y_label_,
+                            out_filename,
+                            x_label_="Length of input text, letters",
+                            ):
+        means, stds = self.get_prepared_for_plotting(usages)
+        X = np.arange(1, usages.shape[0] + 1)
         Y = means
         lower_bounds = Y - 1 * stds
         upper_bounds = Y + 1 * stds
@@ -40,18 +108,14 @@ class Statiscian:
         fitted_line = X * k + b
         # fit a hyperbola
         a, b = self.approximate_curve(X, Y, self.hyperbola)
-        fitted_hyperbola = X**b * a
+        fitted_hyperbola = X ** b * a
         #
         plt.boxplot(intervals)
         line, = plt.plot(X,
                          fitted_line,
                          color='blue',
                          label='Approximated line')
-        # hyperbola, = plt.plot(X,
-        #                       fitted_hyperbola,
-        #                       color='yellow',
-        #                       label="Approximated hyperbola")
-        plt.xticks(np.arange(1, n+1, n // 10),
+        plt.xticks(np.arange(1, n + 1, n // 10),
                    labels=np.arange(0, n, n // 10))
         plt.ylabel(y_label_)
         plt.xlabel(x_label_)
@@ -61,47 +125,17 @@ class Statiscian:
                     )
         plt.tight_layout()
 
-    def make_table(self, running_times: np.array,
-                   occurences: list,
-                   substrings_lengths: list):
-        n = len(occurences)
-        headerColor = 'blue'
-        rowEvenColor = 'lightskyblue'
-        rowOddColor = 'white'
-
-        fig = go.Figure(data=[go.Table(
-            header=dict(
-                values=['<b>Substring length</b>',
-                        '<b>Amount of occurrences</b>',
-                        '<b>Algorithm running time</b>'],
-                line_color='darkslategray',
-                fill_color=headerColor,
-                align='center',
-                font=dict(color='white', size=12)
-            ),
-            cells=dict(
-                values=[
-                    substrings_lengths,
-                    occurences,
-                    running_times,
-                ],
-                line_color='darkslategray',
-                fill_color=[
-                    [[rowEvenColor, rowOddColor][i % 2] for i in range(n)] * 3
-                ],
-                align='center',
-                font=dict(color='black', size=13)
-            ))
-        ])
-        fig.update_layout(width=600, height=600)
-        fig.show()
-
-    def complete_statistic(self, config: dict):
-        """Нужна, кодгда хотим подвести статистику по нескольким алгоритмам:
-         несколько результатов на одном графике или общая сводная таблица."""
+    def make_plots_time_by_length(self):
         raise NotImplementedError()
 
-    def approximate_curve(self, X, Y, func):
+    def make_tables_time_by_many_strings(self):
+        raise NotImplementedError()
+
+    def make_plots_memory_by_length(self):
+        raise NotImplementedError()
+
+    @staticmethod
+    def approximate_curve(X, Y, func):
         popt, popv = curve_fit(func, X, Y, maxfev=100)
         return popt[0], popt[1]
 
@@ -112,5 +146,5 @@ class Statiscian:
 
     @staticmethod
     def hyperbola(x, a, b):
-        y = x**b * a
+        y = x ** b * a
         return y

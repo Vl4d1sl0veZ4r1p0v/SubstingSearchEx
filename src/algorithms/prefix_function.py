@@ -4,20 +4,24 @@ from memory_profiler import memory_usage
 
 
 def performance_testing(data: Sequence, tests_count: int):
-    result_time = []
+    results_times = []
+    results_memories = []
     occurences = []
     for batch in data:
         times_of_batch = []
+        memories_of_batch = []
         batch[1] = batch[0] + '#' + batch[1]
         for _ in range(tests_count):
-            result_memory, vals = memory_usage(
+            performance_memory, vals = memory_usage(
                 (prefix, (batch[0], batch[1])),
                 retval=True
             )
             occurrences, performance_time = vals
             times_of_batch.append(performance_time)
-        result_time.append(times_of_batch)
-    return result_time, result_memory, occurrences
+            memories_of_batch.append(max(performance_memory))
+        results_times.append(times_of_batch)
+        results_memories.append(memories_of_batch)
+    return results_times, results_memories, occurrences
 
 
 def prefix(pattern: str, query: str):
