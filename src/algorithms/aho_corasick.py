@@ -1,5 +1,22 @@
+from memory_profiler import memory_usage
 from time import perf_counter
 from typing import Sequence
+
+
+def performance_testing(data: Sequence, tests_count: int):
+    result_time = []
+    occurences = []
+    for batch in data:
+        times_of_batch = []
+        for _ in range(tests_count):
+            result_memory, vals = memory_usage(
+                (aho_corasick, (batch[0], batch[1])),
+                retval=True
+            )
+            occurrences, performance_time = vals
+            times_of_batch.append(performance_time)
+        result_time.append(times_of_batch)
+    return result_time, result_memory, occurrences
 
 
 class BohrVertex:
@@ -9,9 +26,11 @@ class BohrVertex:
 
 
 class AhoCorasick:
-    alf_length = 26
-    bohr = []
-    pattern = []
+
+    def __init__(self):
+        self.alf_length = 26
+        self.bohr = []
+        self.pattern = []
 
     def make_bohr_vertex(self, parent: int, symbol: str):
         vertex = BohrVertex()
@@ -115,29 +134,3 @@ def aho_corasick(pattern: str, query: str):
         results = ahck.find_all_positions(query)
     end = perf_counter()
     return results, end - start
-
-
-def performance_testing(data: Sequence, tests_count: int) -> list:
-    result = []
-    occurences = []
-    for batch in data:
-        times_of_batch = []
-        for _ in range(tests_count):
-            occurrences, performance_time = aho_corasick(batch[0], batch[1])
-            times_of_batch.append(performance_time)
-        result.append(times_of_batch)
-    return result, occurrences
-
-
-def test_pattern_at_the_beginning():
-    query = "abcc"
-    pattern = "ab"
-    _, occurrences = performance_testing([[pattern, query]], 1)
-    assert occurrences == [0]
-
-
-def test_many_matches():
-    query = "abcab"
-    pattern = "ab"
-    _, occurrences = performance_testing([[pattern, query]], 1)
-    assert occurrences == [0, 3]

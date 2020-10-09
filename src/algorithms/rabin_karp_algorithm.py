@@ -1,17 +1,22 @@
 from time import perf_counter
 from typing import Sequence
+from memory_profiler import memory_usage
 
 
-def performance_testing(data: Sequence, tests_count: int) -> list:
-    result = []
-    occurrences = []
+def performance_testing(data: Sequence, tests_count: int):
+    result_time = []
+    occurences = []
     for batch in data:
         times_of_batch = []
         for _ in range(tests_count):
-            occurrences, performance_time = rabin_karp(batch[0], batch[1])
+            result_memory, vals = memory_usage(
+                (rabin_karp, (batch[0], batch[1])),
+                retval=True
+            )
+            occurrences, performance_time = vals
             times_of_batch.append(performance_time)
-        result.append(times_of_batch)
-    return result, occurrences
+        result_time.append(times_of_batch)
+    return result_time, result_memory, occurrences
 
 
 def get_new_hash(string_hash: int, string: str, i: int,

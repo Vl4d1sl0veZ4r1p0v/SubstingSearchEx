@@ -31,7 +31,8 @@ setup(
                       'retrying==1.3.3',
                       'scipy==1.5.2',
                       'six==1.15.0',
-                      'toml==0.10.1'],
+                      'toml==0.10.1',
+                      'memory-profiler==0.57.0'],
 
     entry_points={
         'console_scripts': [

@@ -6,17 +6,17 @@ from algorithms import prefix_function, rabin_karp_algorithm
 from algorithms import z_function
 
 
-# def test_aho_corasick_many_strings_in_bohr():
-#     ahck = aho_corasick.AhoCorasick()
-#     ahck.bohr_init()
-#     ahck.add_string_to_bohr("abc")
-#     ahck.add_string_to_bohr("bc")
-#     ahck.add_string_to_bohr("cccb")
-#     ahck.add_string_to_bohr("bcdd")
-#     ahck.add_string_to_bohr("bbbc")
-#     assert ahck.find_all_positions(
-#         "abcdcbcddbbbcccbbbcccbb"
-#     ) == [0, 1, 5, 5, 9, 11, 12, 15, 17, 18]
+def test_aho_corasick_many_strings_in_bohr():
+    ahck = aho_corasick.AhoCorasick()
+    ahck.bohr_init()
+    ahck.add_string_to_bohr("abc")
+    ahck.add_string_to_bohr("bc")
+    ahck.add_string_to_bohr("cccb")
+    ahck.add_string_to_bohr("bcdd")
+    ahck.add_string_to_bohr("bbbc")
+    assert ahck.find_all_positions(
+        "abcdcbcddbbbcccbbbcccbb"
+    ) == [0, 1, 5, 5, 9, 11, 12, 15, 17, 18]
 
 
 @pytest.mark.parametrize('algorithm',
@@ -29,7 +29,7 @@ from algorithms import z_function
 def test_query_pattern_equality(algorithm):
     query = "ab"
     pattern = "ab"
-    _, occurrences = algorithm([[pattern, query]], 1)
+    _, _, occurrences = algorithm([[pattern, query]], 1)
     assert occurrences == [0]
 
 
@@ -43,7 +43,7 @@ def test_query_pattern_equality(algorithm):
 def test_query_smaller_than_pattern(algorithm):
     query = "ab"
     pattern = "abc"
-    _, occurrences = algorithm([[pattern, query]], 1)
+    _, _, occurrences = algorithm([[pattern, query]], 1)
     assert occurrences == []
 
 
@@ -57,7 +57,7 @@ def test_query_smaller_than_pattern(algorithm):
 def test_without_a_query(algorithm):
     query = ""
     pattern = "abc"
-    _, occurrences = algorithm([[pattern, query]], 1)
+    _, _, occurrences = algorithm([[pattern, query]], 1)
     assert occurrences == []
 
 
@@ -71,7 +71,7 @@ def test_without_a_query(algorithm):
 def test_pattern_at_the_end(algorithm):
     query = "ccab"
     pattern = "ab"
-    _, occurrences = algorithm([[pattern, query]], 1)
+    _, _, occurrences = algorithm([[pattern, query]], 1)
     assert occurrences == [2]
 
 
@@ -85,7 +85,7 @@ def test_pattern_at_the_end(algorithm):
 def test_pattern_at_the_beginning(algorithm):
     query = "abcc"
     pattern = "ab"
-    _, occurrences = algorithm([[pattern, query]], 1)
+    _, _, occurrences = algorithm([[pattern, query]], 1)
     assert occurrences == [0]
 
 
@@ -99,7 +99,7 @@ def test_pattern_at_the_beginning(algorithm):
 def test_no_matches(algorithm):
     query = "aaaaaaaaaaaaaaaaaaa"
     pattern = "akla"
-    _, occurrences = algorithm([[pattern, query]], 1)
+    _, _, occurrences = algorithm([[pattern, query]], 1)
     assert occurrences == []
 
 
@@ -113,5 +113,5 @@ def test_no_matches(algorithm):
 def test_many_matches(algorithm):
     query = "abcab"
     pattern = "ab"
-    _, occurrences = algorithm([[pattern, query]], 1)
+    _, _, occurrences = algorithm([[pattern, query]], 1)
     assert occurrences == [0, 3]

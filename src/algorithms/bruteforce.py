@@ -1,17 +1,24 @@
+import pytest
+
+from memory_profiler import memory_usage
 from time import perf_counter
 from typing import Sequence
 
 
-def performance_testing(data: Sequence, tests_count: int) -> list:
-    result = []
+def performance_testing(data: Sequence, tests_count: int):
+    result_time = []
     occurences = []
     for batch in data:
         times_of_batch = []
         for _ in range(tests_count):
-            occurrences, performance_time = bruteforce(batch[0], batch[1])
+            result_memory, vals = memory_usage(
+                (bruteforce, (batch[0], batch[1])),
+                retval=True
+            )
+            occurrences, performance_time = vals
             times_of_batch.append(performance_time)
-        result.append(times_of_batch)
-    return result, occurrences
+        result_time.append(times_of_batch)
+    return result_time, result_memory, occurrences
 
 
 def performance_testing_occurences_by_length(data: Sequence,
@@ -26,7 +33,7 @@ def performance_testing_occurences_by_length(data: Sequence,
     return result
 
 
-def bruteforce(pattern: str, query: str) -> list:
+def bruteforce(pattern: str, query: str):
     result = []
     start = perf_counter()
     current_progress = 0

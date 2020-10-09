@@ -1,20 +1,23 @@
-import pytest
 from time import perf_counter
 from typing import Sequence, Tuple
 
+from memory_profiler import memory_usage
 
-def performance_testing(data: Sequence, tests_count: int) -> list:
-    result = []
-    occurrences = []
+
+def performance_testing(data: Sequence, tests_count: int):
+    result_time = []
+    occurences = []
     for batch in data:
         times_of_batch = []
         for _ in range(tests_count):
-            occurrences, performance_time = boyer_moore_search(
-                batch[0], batch[1]
+            result_memory, vals = memory_usage(
+                (boyer_moore_search, (batch[0], batch[1])),
+                retval=True
             )
+            occurrences, performance_time = vals
             times_of_batch.append(performance_time)
-        result.append(times_of_batch)
-    return result, occurrences
+        result_time.append(times_of_batch)
+    return result_time, result_memory, occurrences
 
 
 def z_array(query: str) -> list:
@@ -92,13 +95,3 @@ def boyer_moore_search(pattern: str, query: str) -> Tuple:
             i += max(1, shift_good_suffix[j])
     end = perf_counter()
     return result, end - start
-
-
-# Но это не работает так, как нужно,
-# поэтому нужно прочитать про параметризованные тесты.
-# @pytest.mark.check_by_occurrences
-# def test_boyer_moore_algorithm_correct_works_on_text(text, pattern):
-#     from src.algorithms import bruteforce
-#     results_bruteforce, _ = bruteforce.bruteforce(pattern, text)
-#     results_boyer_moore_algorithm, _ = boyer_moore_search(pattern, text)
-#     assert results_boyer_moore_algorithm == results_bruteforce
