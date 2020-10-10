@@ -22,10 +22,52 @@ class Statiscian:
             stds[i] = np.std(array[i]) / np.sqrt(array.shape[1])
         return means, stds
 
+    def make_table_time_by_many_strings(
+            self,
+            runing_times: np.array,
+            occurences: list,
+            substrings_lengths: list,
+    ):
+        headers = ['<b>Substring length, letters</b>',
+                   '<b>Amount of occurrences</b>',
+                   '<b>Algorithm running time, seconds</b>']
+        self.make_table_by_many_strings(
+            usage=runing_times,
+            headers=headers,
+            occurences=occurences,
+            substrings_lengths=substrings_lengths,
+            out_filename=os.path.join(
+                "results",
+                "time_" + str(datetime.datetime.now()) + '.png'
+            )
+        )
+
+    def make_table_memory_by_many_strings(
+            self,
+            runing_times: np.array,
+            occurences: list,
+            substrings_lengths: list,
+    ):
+        headers = ['<b>Substring length, letters</b>',
+                   '<b>Amount of occurrences</b>',
+                   '<b>Algorithm memory usage, MiB</b>']
+        self.make_table_by_many_strings(
+            usage=runing_times,
+            headers=headers,
+            occurences=occurences,
+            substrings_lengths=substrings_lengths,
+            out_filename=os.path.join(
+                "results",
+                "memory_" + str(datetime.datetime.now()) + '.png'
+            )
+        )
+
     @staticmethod
-    def make_table_time_by_many_strings(running_times: np.array,
-                                        occurences: list,
-                                        substrings_lengths: list):
+    def make_table_by_many_strings(usage: np.array,
+                                   headers: list,
+                                   occurences: list,
+                                   substrings_lengths: list,
+                                   out_filename: str):
         n = len(occurences)
         header_color = 'blue'
         row_even_color = 'lightskyblue'
@@ -33,9 +75,7 @@ class Statiscian:
 
         fig = go.Figure(data=[go.Table(
             header=dict(
-                values=['<b>Substring length</b>',
-                        '<b>Amount of occurrences</b>',
-                        '<b>Algorithm running time</b>'],
+                values=headers,
                 line_color='darkslategray',
                 fill_color=header_color,
                 align='center',
@@ -45,7 +85,7 @@ class Statiscian:
                 values=[
                     substrings_lengths,
                     occurences,
-                    running_times,
+                    usage,
                 ],
                 line_color='darkslategray',
                 fill_color=[
@@ -59,22 +99,46 @@ class Statiscian:
             ))
         ])
         fig.update_layout(width=600, height=600)
-        fig.show()
+        fig.write_image(out_filename)
 
-    def complete_statistic(self, config: dict):
-        """Нужна, когда хотим подвести статистику по нескольким алгоритмам:
-         несколько результатов на одном графике или общая сводная таблица."""
-        experiment_dir = config.get("out_dirname", None)
-        if not experiment_dir:
-            experiment_dir = os.path.join(
-                "results",
-                str(datetime.datetime.now())
-            )
-        if not os.path.isdir(experiment_dir):
-            os.makedirs(experiment_dir)
-        config['out_filename'] = experiment_dir
-        self.make_plots_time_by_length(config)
-        self.make_plots_memory_by_length(config)
+    @staticmethod
+    def make_tables_by_many_strings(usages: np.array,
+                                    headers: list,
+                                    occurences: list,
+                                    substrings_lengths: list,
+                                    out_filename: str):
+        n = len(occurences)
+        header_color = 'blue'
+        row_even_color = 'lightskyblue'
+        row_odd_color = 'white'
+
+        fig = go.Figure(data=[go.Table(
+            header=dict(
+                values=headers,
+                line_color='darkslategray',
+                fill_color=header_color,
+                align='center',
+                font=dict(color='white', size=12)
+            ),
+            cells=dict(
+                values=[
+                    substrings_lengths,
+                    occurences,
+                    usages,
+                ],
+                line_color='darkslategray',
+                fill_color=[
+                    [
+                        [row_even_color, row_odd_color][i % 2]
+                        for i in range(n)
+                    ] * 3
+                ],
+                align='center',
+                font=dict(color='black', size=13)
+            ))
+        ])
+        fig.update_layout(width=600, height=600)
+        fig.write_image(out_filename)
 
     def make_plot_time_by_length(
             self,
@@ -143,6 +207,21 @@ class Statiscian:
                     )
         plt.tight_layout()
 
+    def complete_statistic(self, config: dict):
+        """Нужна, когда хотим подвести статистику по нескольким алгоритмам:
+         несколько результатов на одном графике или общая сводная таблица."""
+        experiment_dir = config.get("out_dirname", None)
+        if not experiment_dir:
+            experiment_dir = os.path.join(
+                "results",
+                str(datetime.datetime.now())
+            )
+        if not os.path.isdir(experiment_dir):
+            os.makedirs(experiment_dir)
+        config['out_filename'] = experiment_dir
+        self.make_plots_time_by_length(config)
+        self.make_plots_memory_by_length(config)
+
     def make_plots_time_by_length(self, config):
         new_config = deepcopy(config)
         new_config['y_label_'] = "Time of working, seconds"
@@ -152,9 +231,6 @@ class Statiscian:
         )
         new_config['usages'] = config['usages']['running_times']
         self.make_plots_by_length(new_config)
-
-    def make_tables_time_by_many_strings(self):
-        raise NotImplementedError()
 
     def make_plots_memory_by_length(self, config):
         new_config = deepcopy(config)
@@ -192,7 +268,7 @@ class Statiscian:
         plt.ylabel(y_label_)
         plt.xlabel(x_label_)
         plt.legend(handles=lines_for_legend)
-        plt.savefig(out_filename, format='jpg',)
+        plt.savefig(out_filename, format='jpg', )
         plt.tight_layout()
 
     @staticmethod

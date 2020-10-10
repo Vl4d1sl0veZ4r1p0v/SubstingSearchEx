@@ -187,17 +187,15 @@ def test_second_experiment_works():
 
 if __name__ == "__main__":
     parser = create_parser()
-    parsed_args = parser.parse_args(['1',
+    parsed_args = parser.parse_args(['2',
                                      '5',
                                      "./data/Texts/Normal/INP_TEXT",
                                      '-a',
                                      "bruteforce",
-                                     '-m',
-                                     '2',
-                                     '-s',
-                                     "рри",
-                                     '-a',
-                                     "z_function"
+                                     '-l',
+                                     '4200',
+                                     '-S',
+                                     "./data/Texts/Normal/Substrings.txt"
                                      ])
     experiments_list = [first_experiment, second_experiment]
     if 1 <= parsed_args.n <= len(experiments_list):
@@ -235,7 +233,12 @@ if __name__ == "__main__":
                                      length_list[occurences_list.index(x)])
             length_list.sort()
             statiscian.make_table_time_by_many_strings(
-                np.mean(results_times, axis=1),
+                np.mean(results_times[0], axis=1),
+                occurences_list,
+                length_list
+            )
+            statiscian.make_table_memory_by_many_strings(
+                np.mean(result_memory[0], axis=1),
                 occurences_list,
                 length_list
             )

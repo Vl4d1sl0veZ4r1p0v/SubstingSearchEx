@@ -27,8 +27,9 @@ def performance_testing(data: Sequence, tests_count: int):
     return results_times, results_memories, occurrences
 
 
-def performance_testing_occurences_by_length(data: Sequence,
-                                             tests_count: int) -> list:
+def performance_testing_occurences_by_length(
+        data: Sequence,
+        tests_count: int) -> list:
     result = []
     for batch in data:
         occurrences_of_batch = []
