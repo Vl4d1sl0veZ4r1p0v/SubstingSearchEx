@@ -17,7 +17,9 @@ def performance_testing(data: Sequence, tests_count: int):
             )
             occurrences, performance_time = vals
             times_of_batch.append(performance_time)
-            memories_of_batch.append(max(performance_memory))
+            memories_of_batch.append(
+                max(performance_memory) - min(performance_memory)
+            )
         results_times.append(times_of_batch)
         results_memories.append(memories_of_batch)
     return results_times, results_memories, occurrences

@@ -1,5 +1,6 @@
 import os
 import datetime
+from copy import deepcopy
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -20,19 +21,6 @@ class Statiscian:
             means[i] = array[i].mean()
             stds[i] = np.std(array[i]) / np.sqrt(array.shape[1])
         return means, stds
-
-    def make_plot_time_by_length(
-            self,
-            running_times: np.array,
-            x_label_="Length of input text, letters",
-            y_label_="Time of working, seconds",
-            out_filename="time" + str(datetime.datetime.now())):
-        self.make_plot_by_length(
-            usages=running_times,
-            x_label_=x_label_,
-            y_label_=y_label_,
-            out_filename=out_filename
-        )
 
     @staticmethod
     def make_table_time_by_many_strings(running_times: np.array,
@@ -76,14 +64,37 @@ class Statiscian:
     def complete_statistic(self, config: dict):
         """Нужна, когда хотим подвести статистику по нескольким алгоритмам:
          несколько результатов на одном графике или общая сводная таблица."""
-        raise NotImplementedError()
+        experiment_dir = config.get("out_dirname", None)
+        if not experiment_dir:
+            experiment_dir = os.path.join(
+                "results",
+                str(datetime.datetime.now())
+            )
+        if not os.path.isdir(experiment_dir):
+            os.makedirs(experiment_dir)
+        config['out_filename'] = experiment_dir
+        self.make_plots_time_by_length(config)
+        self.make_plots_memory_by_length(config)
+
+    def make_plot_time_by_length(
+            self,
+            running_times: np.array,
+            x_label_="Length of input text, letters",
+            y_label_="Time of working, seconds",
+            out_filename="time" + str(datetime.datetime.now())):
+        self.make_plot_by_length(
+            usages=running_times,
+            x_label_=x_label_,
+            y_label_=y_label_,
+            out_filename=out_filename
+        )
 
     def make_plot_memory_by_length(
             self,
             memory_usages: np.array,
             x_label_="Length of input text, letters",
             y_label_="Used memory, MiB",
-            out_filename="memory"+str(datetime.datetime.now())
+            out_filename="memory" + str(datetime.datetime.now())
     ):
         self.make_plot_by_length(
             usages=memory_usages,
@@ -132,14 +143,57 @@ class Statiscian:
                     )
         plt.tight_layout()
 
-    def make_plots_time_by_length(self):
-        raise NotImplementedError()
+    def make_plots_time_by_length(self, config):
+        new_config = deepcopy(config)
+        new_config['y_label_'] = "Time of working, seconds"
+        new_config['out_filename'] = os.path.join(
+            config["out_filename"],
+            "time_" + str(datetime.datetime.now())
+        )
+        new_config['usages'] = config['usages']['running_times']
+        self.make_plots_by_length(new_config)
 
     def make_tables_time_by_many_strings(self):
         raise NotImplementedError()
 
-    def make_plots_memory_by_length(self):
-        raise NotImplementedError()
+    def make_plots_memory_by_length(self, config):
+        new_config = deepcopy(config)
+        new_config['y_label_'] = "Used memory, MiB"
+        new_config['out_filename'] = os.path.join(
+            config["out_filename"],
+            "memory_" + str(datetime.datetime.now())
+        )
+        new_config['usages'] = config['usages']['memory_usage']
+        self.make_plots_by_length(new_config)
+
+    def make_plots_by_length(self, config):
+        usages = config['usages']
+        algorithms_names = config['algorithms_names']
+        x_label_ = config['x_label_']
+        y_label_ = config['y_label_']
+        out_filename = config['out_filename']
+        fig, ax = plt.subplots(figsize=(9, 6))
+        lines_for_legend = []
+        for i in range(len(usages)):
+            means, stds = self.get_prepared_for_plotting(usages[i])
+            X = np.arange(1, usages[i].shape[0] + 1)
+            Y = means
+            n = usages[i].shape[0]
+            # fit a line
+            k, b = self.approximate_curve(X, Y, self.line)
+            fitted_line = X * k + b
+            plt.scatter(X, Y, alpha=0.5)
+            line, = plt.plot(X,
+                             fitted_line,
+                             label=algorithms_names[i])
+            lines_for_legend.append(line)
+        plt.xticks(np.arange(1, n + 1, n // 10),
+                   labels=np.arange(0, n, n // 10))
+        plt.ylabel(y_label_)
+        plt.xlabel(x_label_)
+        plt.legend(handles=lines_for_legend)
+        plt.savefig(out_filename, format='jpg',)
+        plt.tight_layout()
 
     @staticmethod
     def approximate_curve(X, Y, func):

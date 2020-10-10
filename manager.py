@@ -205,11 +205,18 @@ if __name__ == "__main__":
             experiments_list[parsed_args.n - 1](parsed_args=parsed_args)
         statiscian = Statiscian()
         if parsed_args.n == 1:
-            for i, algorithm in enumerate(parsed_args.a):
-                statiscian.make_plot_memory_by_length(
-                    memory_usages=result_memory[i],
-                    out_filename=algorithm,
-                )
+            if len(parsed_args.a) > 1:
+                config = {
+                    'usages': {
+                        'memory_usage': result_memory,
+                        'running_times': results_times,
+                    },
+                    'algorithms_names': parsed_args.a,
+                    'x_label_': "Length of input text, letters",
+                }
+                statiscian.complete_statistic(config)
+            elif len(parsed_args.a) == 1:
+                raise NotImplementedError()
         elif parsed_args.n == 2:
             dir_name = os.path.dirname(parsed_args.substrings_filename)
             length_list = []
