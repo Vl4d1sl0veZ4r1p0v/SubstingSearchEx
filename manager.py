@@ -192,6 +192,8 @@ if __name__ == "__main__":
                                      "./data/Texts/Normal/INP_TEXT",
                                      '-a',
                                      "bruteforce",
+                                     '-a',
+                                     "z_function",
                                      '-l',
                                      '4200',
                                      '-S',
@@ -232,13 +234,15 @@ if __name__ == "__main__":
                                      key=lambda x:
                                      length_list[occurences_list.index(x)])
             length_list.sort()
-            statiscian.make_table_time_by_many_strings(
-                np.mean(results_times[0], axis=1),
-                occurences_list,
-                length_list
+            statiscian.make_tables_time_by_many_strings(
+                runing_times=np.mean(results_times, axis=2),
+                occurences=occurences_list,
+                substrings_lengths=length_list,
+                algorithms=parsed_args.a
             )
-            statiscian.make_table_memory_by_many_strings(
-                np.mean(result_memory[0], axis=1),
-                occurences_list,
-                length_list
+            statiscian.make_tables_memory_by_many_strings(
+                memory_usage=np.mean(result_memory, axis=2),
+                occurences=occurences_list,
+                substrings_lengths=length_list,
+                algorithms=parsed_args.a,
             )

@@ -22,48 +22,62 @@ class Statiscian:
             stds[i] = np.std(array[i]) / np.sqrt(array.shape[1])
         return means, stds
 
-    def make_table_time_by_many_strings(
+    def make_tables_time_by_many_strings(
             self,
             runing_times: np.array,
             occurences: list,
             substrings_lengths: list,
+            algorithms: list,
     ):
         headers = ['<b>Substring length, letters</b>',
-                   '<b>Amount of occurrences</b>',
-                   '<b>Algorithm running time, seconds</b>']
+                   '<b>Amount of occurrences</b>']
+        headers.extend(['<b>' + algorithm + '</b>'
+                        for algorithm in algorithms])
+        values = [
+            substrings_lengths,
+            occurences,
+        ]
+        values.extend(runing_times)
         self.make_table_by_many_strings(
-            usage=runing_times,
             headers=headers,
             occurences=occurences,
             substrings_lengths=substrings_lengths,
             out_filename=os.path.join(
                 "results",
                 "time_" + str(datetime.datetime.now()) + '.png'
-            )
+            ),
+            values=values,
         )
 
-    def make_table_memory_by_many_strings(
+    def make_tables_memory_by_many_strings(
             self,
-            runing_times: np.array,
+            memory_usage: np.array,
             occurences: list,
             substrings_lengths: list,
+            algorithms: list,
     ):
         headers = ['<b>Substring length, letters</b>',
-                   '<b>Amount of occurrences</b>',
-                   '<b>Algorithm memory usage, MiB</b>']
+                   '<b>Amount of occurrences</b>']
+        headers.extend(['<b>' + algorithm + '</b>'
+                        for algorithm in algorithms])
+        values = [
+            substrings_lengths,
+            occurences,
+        ]
+        values.extend(memory_usage)
         self.make_table_by_many_strings(
-            usage=runing_times,
             headers=headers,
             occurences=occurences,
             substrings_lengths=substrings_lengths,
             out_filename=os.path.join(
                 "results",
                 "memory_" + str(datetime.datetime.now()) + '.png'
-            )
+            ),
+            values=values,
         )
 
     @staticmethod
-    def make_table_by_many_strings(usage: np.array,
+    def make_table_by_many_strings(values: list,
                                    headers: list,
                                    occurences: list,
                                    substrings_lengths: list,
@@ -72,7 +86,6 @@ class Statiscian:
         header_color = 'blue'
         row_even_color = 'lightskyblue'
         row_odd_color = 'white'
-
         fig = go.Figure(data=[go.Table(
             header=dict(
                 values=headers,
@@ -82,11 +95,7 @@ class Statiscian:
                 font=dict(color='white', size=12)
             ),
             cells=dict(
-                values=[
-                    substrings_lengths,
-                    occurences,
-                    usage,
-                ],
+                values=values,
                 line_color='darkslategray',
                 fill_color=[
                     [
@@ -94,46 +103,7 @@ class Statiscian:
                         for i in range(n)
                     ] * 3
                 ],
-                align='center',
-                font=dict(color='black', size=13)
-            ))
-        ])
-        fig.update_layout(width=600, height=600)
-        fig.write_image(out_filename)
-
-    @staticmethod
-    def make_tables_by_many_strings(usages: np.array,
-                                    headers: list,
-                                    occurences: list,
-                                    substrings_lengths: list,
-                                    out_filename: str):
-        n = len(occurences)
-        header_color = 'blue'
-        row_even_color = 'lightskyblue'
-        row_odd_color = 'white'
-
-        fig = go.Figure(data=[go.Table(
-            header=dict(
-                values=headers,
-                line_color='darkslategray',
-                fill_color=header_color,
-                align='center',
-                font=dict(color='white', size=12)
-            ),
-            cells=dict(
-                values=[
-                    substrings_lengths,
-                    occurences,
-                    usages,
-                ],
-                line_color='darkslategray',
-                fill_color=[
-                    [
-                        [row_even_color, row_odd_color][i % 2]
-                        for i in range(n)
-                    ] * 3
-                ],
-                align='center',
+                align='left',
                 font=dict(color='black', size=13)
             ))
         ])
