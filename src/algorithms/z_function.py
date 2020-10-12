@@ -29,6 +29,7 @@ def performance_testing(data: Sequence, tests_count: int):
 def z(pattern: str, query: str) -> Tuple:
     """This finction find index of first enter pattern in text and returns
     tuple of entres and time in milliseconds."""
+    print(end='')
     result = []
     left, right = 0, 0
     z_list = [0] * len(query)

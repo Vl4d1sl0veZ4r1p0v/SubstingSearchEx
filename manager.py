@@ -6,7 +6,7 @@ import pytest
 
 from algorithms import boyer_moore_algorithm, bruteforce
 from algorithms import prefix_function, rabin_karp_algorithm
-from algorithms import z_function
+from algorithms import z_function, pythons_find
 from data_loaders import data_best, data_amorotized
 from statisticians.simple_statiscian import Statiscian
 
@@ -138,7 +138,7 @@ def create_parser():
                         help="number of test runs")
     parser.add_argument('t', action='store',
                         help="path to text")
-    parser.add_argument('-a', action='append', default=[],
+    parser.add_argument('-a', action='append', default=["pythons_find"],
                         help="tested algorithms")
     parser.add_argument('-l', action='store', dest="length", type=int,
                         help="maximum text length")

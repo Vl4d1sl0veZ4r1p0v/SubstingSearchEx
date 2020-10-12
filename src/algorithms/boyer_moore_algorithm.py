@@ -81,6 +81,7 @@ def get_shift_good_suffix(i: int, big_l: list, small_l_prime: list) -> int:
 
 
 def boyer_moore_search(pattern: str, query: str) -> Tuple:
+    print(end='')
     result = []
     shift_bad_character = get_shift_bad_character(pattern)
     big_l, small_l_prime = good_suffix_precalc(pattern)

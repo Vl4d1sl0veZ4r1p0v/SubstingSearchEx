@@ -29,6 +29,7 @@ def performance_testing(data: Sequence, tests_count: int):
 def prefix(pattern: str, query: str):
     """This finction find index of first enter pattern in text and returns
     tuple of entres and time in milliseconds."""
+    print(end='')
     result = []
     p_list = [0] * len(query)
     start = perf_counter()

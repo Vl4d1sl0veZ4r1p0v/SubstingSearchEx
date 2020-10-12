@@ -2,7 +2,8 @@ import pytest
 
 from algorithms import aho_corasick
 from algorithms import boyer_moore_algorithm, bruteforce
-from algorithms import prefix_function, rabin_karp_algorithm
+from algorithms import prefix_function, pythons_find
+from algorithms import rabin_karp_algorithm
 from algorithms import z_function
 
 
@@ -25,7 +26,8 @@ def test_aho_corasick_many_strings_in_bohr():
                           prefix_function.performance_testing,
                           rabin_karp_algorithm.performance_testing,
                           z_function.performance_testing,
-                          aho_corasick.performance_testing])
+                          aho_corasick.performance_testing,
+                          pythons_find.performance_testing])
 def test_query_pattern_equality(algorithm):
     query = "ab"
     pattern = "ab"
@@ -39,7 +41,8 @@ def test_query_pattern_equality(algorithm):
                           prefix_function.performance_testing,
                           rabin_karp_algorithm.performance_testing,
                           z_function.performance_testing,
-                          aho_corasick.performance_testing])
+                          aho_corasick.performance_testing,
+                          pythons_find.performance_testing])
 def test_query_smaller_than_pattern(algorithm):
     query = "ab"
     pattern = "abc"
@@ -53,7 +56,8 @@ def test_query_smaller_than_pattern(algorithm):
                           prefix_function.performance_testing,
                           rabin_karp_algorithm.performance_testing,
                           z_function.performance_testing,
-                          aho_corasick.performance_testing])
+                          aho_corasick.performance_testing,
+                          pythons_find.performance_testing])
 def test_without_a_query(algorithm):
     query = ""
     pattern = "abc"
@@ -67,7 +71,8 @@ def test_without_a_query(algorithm):
                           prefix_function.performance_testing,
                           rabin_karp_algorithm.performance_testing,
                           z_function.performance_testing,
-                          aho_corasick.performance_testing])
+                          aho_corasick.performance_testing,
+                          pythons_find.performance_testing])
 def test_pattern_at_the_end(algorithm):
     query = "ccab"
     pattern = "ab"
@@ -81,7 +86,8 @@ def test_pattern_at_the_end(algorithm):
                           prefix_function.performance_testing,
                           rabin_karp_algorithm.performance_testing,
                           z_function.performance_testing,
-                          aho_corasick.performance_testing])
+                          aho_corasick.performance_testing,
+                          pythons_find.performance_testing])
 def test_pattern_at_the_beginning(algorithm):
     query = "abcc"
     pattern = "ab"
@@ -95,7 +101,8 @@ def test_pattern_at_the_beginning(algorithm):
                           prefix_function.performance_testing,
                           rabin_karp_algorithm.performance_testing,
                           z_function.performance_testing,
-                          aho_corasick.performance_testing])
+                          aho_corasick.performance_testing,
+                          pythons_find.performance_testing])
 def test_no_matches(algorithm):
     query = "aaaaaaaaaaaaaaaaaaa"
     pattern = "akla"
@@ -109,7 +116,8 @@ def test_no_matches(algorithm):
                           prefix_function.performance_testing,
                           rabin_karp_algorithm.performance_testing,
                           z_function.performance_testing,
-                          aho_corasick.performance_testing])
+                          aho_corasick.performance_testing,
+                          pythons_find.performance_testing])
 def test_many_matches(algorithm):
     query = "abcab"
     pattern = "ab"

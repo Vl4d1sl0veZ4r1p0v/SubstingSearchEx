@@ -131,6 +131,7 @@ class AhoCorasick:
 
 
 def aho_corasick(pattern: str, query: str):
+    print(end='')
     results = []
     start = perf_counter()
     ahck = AhoCorasick()

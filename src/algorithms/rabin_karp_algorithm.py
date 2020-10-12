@@ -32,6 +32,7 @@ def get_new_hash(string_hash: int, string: str, i: int,
 
 def rabin_karp(pattern: str, query: str,
                base: int = 7, limit: int = int(1e9 + 7)) -> list:
+    print(end='')
     result = []
     query_hash = 0
     pattern_hash = 0
