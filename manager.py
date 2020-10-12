@@ -4,6 +4,7 @@ import numpy as np
 import os
 import pytest
 
+from algorithms import aho_corasick
 from algorithms import boyer_moore_algorithm, bruteforce
 from algorithms import prefix_function, rabin_karp_algorithm
 from algorithms import z_function, pythons_find
@@ -62,14 +63,14 @@ def first_experiment(parsed_args):
     ):
         results_times = []
         results_memory = []
+        all_data = list(data_best.generate(maxlength,
+                                           substring,
+                                           text_filename,
+                                           sparce=1000))
         for algorithm in algorithms_names:
             algorithm_tester = globals()[algorithm].performance_testing
             results_times_of_algorithm, results_memory_of_algorithm, _ = \
-                algorithm_tester(data_best.
-                                 generate(maxlength,
-                                          substring,
-                                          text_filename,
-                                          sparce=1000),
+                algorithm_tester(all_data,
                                  tests_count,
                                  )
             results_times.append(np.array(results_times_of_algorithm))
@@ -117,12 +118,12 @@ def second_experiment(parsed_args):
         )
         results_times = []
         results_memory = []
+        all_data = list(data_amorotized.generate(substrings_filename,
+                                                 text_filename))
         for algorithm in algorithms_names:
             algorithm_tester = globals()[algorithm].performance_testing
             results_times_of_algorithm, results_memory_of_algorithm, _ = \
-                algorithm_tester(data_amorotized.
-                                 generate(substrings_filename,
-                                          text_filename),
+                algorithm_tester(all_data,
                                  tests_count,
                                  )
             results_times.append(np.array(results_times_of_algorithm))
@@ -187,18 +188,17 @@ def test_second_experiment_works():
 
 if __name__ == "__main__":
     parser = create_parser()
-    parsed_args = parser.parse_args(['2',
-                                     '5',
-                                     "./data/Texts/Normal/INP_TEXT",
-                                     '-a',
-                                     "bruteforce",
-                                     '-a',
-                                     "z_function",
-                                     '-l',
-                                     '4200',
-                                     '-S',
-                                     "./data/Texts/Normal/Substrings.txt"
-                                     ])
+    parsed_args = parser.parse_args([
+        '2',
+        '5',
+        "./data/Texts/Normal/INP_TEXT",
+        '-a',
+        "aho_corasick",
+        '-l',
+        '4200',
+        '-S',
+        "./data/Texts/Normal/Substrings.txt"
+    ])
     experiments_list = [first_experiment, second_experiment]
     if 1 <= parsed_args.n <= len(experiments_list):
         results_times, result_memory = \

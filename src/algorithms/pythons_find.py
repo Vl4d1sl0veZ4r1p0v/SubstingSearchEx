@@ -5,7 +5,7 @@ from time import perf_counter
 from typing import Sequence
 
 
-def performance_testing(data: Sequence, tests_count: int):
+def performance_testing(data, tests_count: int):
     results_times = []
     results_memories = []
     occurences = []

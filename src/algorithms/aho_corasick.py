@@ -34,18 +34,17 @@ class BohrVertex:
 class AhoCorasick:
 
     def __init__(self):
-        self.alf_length = 26
         self.bohr = []
         self.pattern = []
 
     def make_bohr_vertex(self, parent: int, symbol: str):
         vertex = BohrVertex()
-        vertex.next_vertex = [-1] * self.alf_length
-        vertex.auto_move = [-1] * self.alf_length
+        vertex.next_vertex = {}
+        vertex.auto_move = {}
         vertex.flag = False
         vertex.suffix_link = -1
         vertex.parent = parent
-        vertex.symbol = ord(symbol)
+        vertex.symbol = symbol
         vertex.suffix_flink = -1
         vertex.pattern_num = -100
         return vertex
@@ -56,9 +55,9 @@ class AhoCorasick:
     def add_string_to_bohr(self, string: str):
         num = 0
         for i in range(len(string)):
-            symbol = ord(string[i]) - ord('a')
-            if self.bohr[num].next_vertex[symbol] == -1:
-                self.bohr.append(self.make_bohr_vertex(num, chr(symbol)))
+            symbol = string[i]
+            if symbol not in self.bohr[num].next_vertex:
+                self.bohr.append(self.make_bohr_vertex(num, symbol))
                 self.bohr[num].next_vertex[symbol] = len(self.bohr) - 1
             num = self.bohr[num].next_vertex[symbol]
         self.bohr[num].flag = True
@@ -68,8 +67,8 @@ class AhoCorasick:
     def is_string_in_bohr(self, string: str):
         num = 0
         for i in range(len(string)):
-            symbol = ord(string[i]) - ord('a')
-            if self.bohr[num].next_vertex[symbol] == -1:
+            symbol = string[i]
+            if symbol not in self.bohr[num].next_vertex:
                 return False
             num = self.bohr[num].next_vertex[symbol]
         return True
@@ -86,8 +85,8 @@ class AhoCorasick:
         return self.bohr[vertex_num].suffix_link
 
     def get_auto_move(self, vertex_num: int, symbol: int):
-        if self.bohr[vertex_num].auto_move[symbol] == -1:
-            if self.bohr[vertex_num].next_vertex[symbol] != -1:
+        if symbol not in self.bohr[vertex_num].auto_move:
+            if symbol in self.bohr[vertex_num].next_vertex:
                 self.bohr[vertex_num].auto_move[symbol] = \
                     self.bohr[vertex_num].next_vertex[symbol]
             else:
@@ -124,7 +123,7 @@ class AhoCorasick:
         results = []
         u = 0
         for i in range(len(string)):
-            u = self.get_auto_move(u, ord(string[i]) - ord('a'))
+            u = self.get_auto_move(u, string[i])
             tmp = self.check(u, i + 1)
             results.extend(tmp)
         return results
