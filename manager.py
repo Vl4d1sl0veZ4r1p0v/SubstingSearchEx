@@ -66,7 +66,7 @@ def first_experiment(parsed_args):
         all_data = list(data_best.generate(maxlength,
                                            substring,
                                            text_filename,
-                                           sparce=1000))
+                                           sparce=5000))
         for algorithm in algorithms_names:
             algorithm_tester = globals()[algorithm].performance_testing
             results_times_of_algorithm, results_memory_of_algorithm, _ = \
@@ -195,18 +195,15 @@ if __name__ == "__main__":
             experiments_list[parsed_args.n - 1](parsed_args=parsed_args)
         statiscian = Statiscian()
         if parsed_args.n == 1:
-            if len(parsed_args.a) > 1:
-                config = {
-                    'usages': {
-                        'memory_usage': result_memory,
-                        'running_times': results_times,
-                    },
-                    'algorithms_names': parsed_args.a,
-                    'x_label_': "Length of input text, letters",
-                }
-                statiscian.complete_statistic(config)
-            elif len(parsed_args.a) == 1:
-                raise NotImplementedError()
+            config = {
+                'usages': {
+                    'memory_usage': result_memory,
+                    'running_times': results_times,
+                },
+                'algorithms_names': parsed_args.a,
+                'x_label_': "Length of input text, letters",
+            }
+            statiscian.complete_statistic(config)
         elif parsed_args.n == 2:
             dir_name = os.path.dirname(parsed_args.substrings_filename)
             length_list = []

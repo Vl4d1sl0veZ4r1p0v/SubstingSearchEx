@@ -107,8 +107,8 @@ class Statiscian:
                 font=dict(color='black', size=13)
             ))
         ])
-        fig.update_layout(width=600, height=600)
         fig.write_image(out_filename)
+        #fig.show()
 
     def make_plot_time_by_length(
             self,
@@ -221,9 +221,12 @@ class Statiscian:
         fig, ax = plt.subplots(figsize=(9, 6))
         lines_for_legend = []
         for i in range(len(usages)):
+            print(algorithms_names[i])
             means, stds = self.get_prepared_for_plotting(usages[i])
             X = np.arange(1, usages[i].shape[0] + 1)
             Y = means
+            # Delete outliers
+            #
             n = usages[i].shape[0]
             # fit a line
             k, b = self.approximate_curve(X, Y, self.line)
