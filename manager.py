@@ -188,7 +188,26 @@ def test_second_experiment_works():
 
 if __name__ == "__main__":
     parser = create_parser()
-    parsed_args = parser.parse_args()
+    parsed_args = parser.parse_args(['2',
+                                     '5',
+                                     "./data/Texts/Normal/INP_TEXT",
+                                     '-a',
+                                     "bruteforce",
+                                     '-a',
+                                     "boyer_moore_algorithm",
+                                     '-a',
+                                     "prefix_function",
+                                     '-a',
+                                     "rabin_karp_algorithm",
+                                     '-a',
+                                     "z_function",
+                                     '-a',
+                                     "aho_corasick",
+                                     '-l',
+                                     '4200',
+                                     '-S',
+                                     "./data/Texts/Normal/Substrings.txt"
+                                     ])
     experiments_list = [first_experiment, second_experiment]
     if 1 <= parsed_args.n <= len(experiments_list):
         results_times, result_memory = \

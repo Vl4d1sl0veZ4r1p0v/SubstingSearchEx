@@ -107,6 +107,7 @@ class Statiscian:
                 font=dict(color='black', size=13)
             ))
         ])
+        fig.update_layout(width=1800, height=600)
         fig.write_image(out_filename)
         #fig.show()
 
