@@ -30,7 +30,7 @@ def test_generate_checks_if_completes_correctly_into_batches():
             substrings_filename=tmp_substrings_file_name,
             text_filename=tmp_text_file_name,
         ))
-    assert batches == [[substring, text] for substring in substrings]
+    assert batches == [(substring, text) for substring in substrings]
 
 
 def test_generate_checks_if_divides_correctly_into_batches():
@@ -50,6 +50,6 @@ def test_generate_checks_if_divides_correctly_into_batches():
             sparce=1_000
         ))
     assert batches == [
-        [substring, text[:1_000 * i]]
+        (substring, text[:1_000 * i])
         for i in range(1, int(text_size * length / 100 / 1_000) + 1)
     ]
