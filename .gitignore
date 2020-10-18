@@ -5,6 +5,9 @@
 *.pytest_cache*
 *.ipynb_checkpoints*
 *.ipynb
+*.coverage*
+*build*
+*dist*
 
 ##########
 # Git    #

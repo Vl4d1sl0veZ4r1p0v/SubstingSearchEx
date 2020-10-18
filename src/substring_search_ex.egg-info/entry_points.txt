@@ -1,3 +1,0 @@
-[console_scripts]
-substring_search_ex = manager
-

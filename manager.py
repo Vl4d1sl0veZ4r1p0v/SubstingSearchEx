@@ -2,12 +2,10 @@ import argparse
 import json
 import numpy as np
 import os
-import pytest
 
-from algorithms import aho_corasick
-from algorithms import boyer_moore_algorithm, bruteforce
-from algorithms import prefix_function, rabin_karp_algorithm
-from algorithms import z_function, pythons_find
+from algorithms import aho_corasick, boyer_moore_algorithm, bruteforce
+from algorithms import prefix_function, pythons_find, rabin_karp_algorithm
+from algorithms import z_function
 from data_loaders import data_best, data_amorotized
 from statisticians.simple_statiscian import Statiscian
 
@@ -48,12 +46,12 @@ def check_arguments_second_experiment(tests_count,
     return False
 
 
-def first_experiment(parsed_args):
-    tests_count = parsed_args.c
-    algorithms_names = parsed_args.a
-    text_filename = parsed_args.t
-    substring = parsed_args.substring
-    maxlength = parsed_args.maxlength
+def first_experiment(parsed_arguments, sparce_):
+    tests_count = parsed_arguments.c
+    algorithms_names = parsed_arguments.a
+    text_filename = parsed_arguments.t
+    substring = parsed_arguments.substring
+    maxlength = parsed_arguments.maxlength
     if check_arguments_first_experiment(
             tests_count,
             algorithms_names,
@@ -66,7 +64,7 @@ def first_experiment(parsed_args):
         all_data = list(data_best.generate(maxlength,
                                            substring,
                                            text_filename,
-                                           sparce=5000))
+                                           sparce=sparce_))
         for algorithm in algorithms_names:
             algorithm_tester = globals()[algorithm].performance_testing
             results_times_of_algorithm, results_memory_of_algorithm, _ = \
@@ -98,12 +96,12 @@ def preparation_for_second_experiment(substrings_filename: str,
                     }, fout)
 
 
-def second_experiment(parsed_args):
-    tests_count = parsed_args.c
-    algorithms_names = parsed_args.a
-    text_filename = parsed_args.t
-    substrings_filename = parsed_args.substrings_filename
-    length = parsed_args.length
+def second_experiment(parsed_arguments):
+    tests_count = parsed_arguments.c
+    algorithms_names = parsed_arguments.a
+    text_filename = parsed_arguments.t
+    substrings_filename = parsed_arguments.substrings_filename
+    length = parsed_arguments.length
     if check_arguments_second_experiment(
             tests_count,
             algorithms_names,
@@ -132,15 +130,19 @@ def second_experiment(parsed_args):
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(description='Manager of tests',
+    parser = argparse.ArgumentParser(description='CLI manager of the experiments executing.',
                                      add_help=True)
-    parser.add_argument('n', action='store', type=int)
+    parser.add_argument('n', action='store', type=int,
+                        help="""number of the experiment. 
+In current version supported only '1' or '2'""")
     parser.add_argument('c', action='store', type=int,
-                        help="number of test runs")
+                        help="""how many times per algorithm experiment runs. 
+As a result returned mean""")
     parser.add_argument('t', action='store',
                         help="path to text")
     parser.add_argument('-a', action='append', default=["pythons_find"],
-                        help="tested algorithms")
+                        help=
+                        "a tested algorithm, which will be added to the list")
     parser.add_argument('-l', action='store', dest="length", type=int,
                         help="maximum text length")
     parser.add_argument('-s', action='store', dest="substring",
@@ -148,70 +150,18 @@ def create_parser():
     parser.add_argument('-m', action='store', dest="maxlength", type=int,
                         help="maximum percentage of text that can be selected")
     parser.add_argument('-S', action='store', dest="substrings_filename",
-                        help="path to substrings")
+                        help="path to substrings file")
+    parser.add_argument('--version', action='version', version='%(prog)s 0.2.0')
     return parser
-
-
-def test_first_experiment_works():
-    parser = create_parser()
-    parsed_args = parser.parse_args(['1',
-                                     '5',
-                                     "./data/Texts/Normal/INP_TEXT",
-                                     '-a',
-                                     "bruteforce",
-                                     '-m',
-                                     '2',
-                                     '-s',
-                                     "tree"
-                                     ])
-    results_times, _ = first_experiment(parsed_args=parsed_args)
-    results_times = np.array(results_times)
-    assert results_times.shape == (1, int(2 * 2661770 / 100 / 1_000), 5)
-
-
-def test_second_experiment_works():
-    parser = create_parser()
-    parsed_args = parser.parse_args(['2',
-                                     '5',
-                                     "./data/Texts/Normal/INP_TEXT",
-                                     '-a',
-                                     "bruteforce",
-                                     '-l',
-                                     '4200',
-                                     '-S',
-                                     "./data/Texts/Normal/Substrings.txt"
-                                     ])
-    results_times, _ = second_experiment(parsed_args=parsed_args)
-    results_times = np.array(results_times)
-    assert results_times.shape == (1, 12, 5)
 
 
 if __name__ == "__main__":
     parser = create_parser()
-    parsed_args = parser.parse_args(['2',
-                                     '5',
-                                     "./data/Texts/Normal/INP_TEXT",
-                                     '-a',
-                                     "bruteforce",
-                                     '-a',
-                                     "boyer_moore_algorithm",
-                                     '-a',
-                                     "prefix_function",
-                                     '-a',
-                                     "rabin_karp_algorithm",
-                                     '-a',
-                                     "z_function",
-                                     '-a',
-                                     "aho_corasick",
-                                     '-l',
-                                     '4200',
-                                     '-S',
-                                     "./data/Texts/Normal/Substrings.txt"
-                                     ])
+    parsed_args = parser.parse_args()
     experiments_list = [first_experiment, second_experiment]
     if 1 <= parsed_args.n <= len(experiments_list):
         results_times, result_memory = \
-            experiments_list[parsed_args.n - 1](parsed_args=parsed_args)
+            experiments_list[parsed_args.n - 1](parsed_arguments=parsed_args)
         statiscian = Statiscian()
         if parsed_args.n == 1:
             config = {

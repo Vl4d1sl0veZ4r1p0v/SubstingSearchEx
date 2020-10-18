@@ -1,10 +1,7 @@
 import pytest
 
-from algorithms import aho_corasick
-from algorithms import boyer_moore_algorithm, bruteforce
-from algorithms import prefix_function, pythons_find
-from algorithms import rabin_karp_algorithm
-from algorithms import z_function
+from algorithms import aho_corasick, bruteforce, rabin_karp_algorithm, boyer_moore_algorithm, z_function, pythons_find, \
+    prefix_function
 
 
 def test_aho_corasick_many_strings_in_bohr():

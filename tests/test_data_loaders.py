@@ -2,8 +2,7 @@ import os
 from random import choice
 from string import ascii_lowercase
 
-from data_loaders import data_amorotized
-from data_loaders import data_best
+from data_loaders import data_amorotized, data_best
 
 
 def test_generate_checks_if_completes_correctly_into_batches():
