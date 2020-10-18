@@ -130,19 +130,20 @@ def second_experiment(parsed_arguments):
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(description='CLI manager of the experiments executing.',
-                                     add_help=True)
+    parser = argparse.ArgumentParser(
+        description='CLI manager of the experiments executing.',
+        add_help=True)
     parser.add_argument('n', action='store', type=int,
-                        help="""number of the experiment. 
-In current version supported only '1' or '2'""")
+                        help="""number of the experiment.
+                        In current version supported only '1' or '2'""")
     parser.add_argument('c', action='store', type=int,
-                        help="""how many times per algorithm experiment runs. 
-As a result returned mean""")
+                        help="""how many times per algorithm experiment runs.
+                        As a result returned mean""")
     parser.add_argument('t', action='store',
                         help="path to text")
     parser.add_argument('-a', action='append', default=["pythons_find"],
-                        help=
-                        "a tested algorithm, which will be added to the list")
+                        help="""a tested algorithm,
+                         which will be added to the list""")
     parser.add_argument('-l', action='store', dest="length", type=int,
                         help="maximum text length")
     parser.add_argument('-s', action='store', dest="substring",
@@ -151,7 +152,8 @@ As a result returned mean""")
                         help="maximum percentage of text that can be selected")
     parser.add_argument('-S', action='store', dest="substrings_filename",
                         help="path to substrings file")
-    parser.add_argument('--version', action='version', version='%(prog)s 0.2.0')
+    parser.add_argument('--version', action='version',
+                        version='%(prog)s 0.2.0')
     return parser
 
 

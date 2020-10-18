@@ -5,4 +5,4 @@ def generate(substrings_filename, text_filename):
         substrings = filter(lambda x: len(x),
                             fin_substrings.read().split("\n"))
     for substring in substrings:
-        yield [substring, text]
+        yield substring, text

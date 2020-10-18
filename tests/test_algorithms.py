@@ -1,6 +1,8 @@
 import pytest
 
-from algorithms import aho_corasick, bruteforce, rabin_karp_algorithm, boyer_moore_algorithm, z_function, pythons_find, \
+from algorithms import aho_corasick, bruteforce,\
+    rabin_karp_algorithm, boyer_moore_algorithm,\
+    z_function, pythons_find, \
     prefix_function
 
 
