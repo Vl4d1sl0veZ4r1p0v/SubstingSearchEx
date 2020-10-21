@@ -22,7 +22,7 @@ def performance_testing(data: Sequence, tests_count: int):
             )
         results_times.append(times_of_batch)
         results_memories.append(memories_of_batch)
-    return results_times, results_memories, occurrences
+    return [results_times, results_memories, occurrences]
 
 
 def get_new_hash(string_hash: int, string: str, i: int,
@@ -60,4 +60,4 @@ def rabin_karp(pattern: str, query: str,
     if query.endswith(pattern) and len(query) > len(pattern):
         result.append(len(query) - len(pattern))
     end = perf_counter()
-    return result, end - start
+    return [result, end - start]

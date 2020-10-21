@@ -23,7 +23,7 @@ def performance_testing(data: Sequence, tests_count: int):
             )
         results_times.append(times_of_batch)
         results_memories.append(memories_of_batch)
-    return results_times, results_memories, occurrences
+    return [results_times, results_memories, occurrences]
 
 
 def z_array(query: str) -> list:
@@ -101,4 +101,4 @@ def boyer_moore_search(pattern: str, query: str) -> Tuple:
             result.append(i)
             i += max(1, shift_good_suffix[j])
     end = perf_counter()
-    return result, end - start
+    return [result, end - start]

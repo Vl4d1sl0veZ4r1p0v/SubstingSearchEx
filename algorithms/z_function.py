@@ -10,10 +10,10 @@ def performance_testing(data: Sequence, tests_count: int):
     for batch in data:
         times_of_batch = []
         memories_of_batch = []
-        batch[1] = batch[0] + '#' + batch[1]
+        batch_1 = batch[0] + '#' + batch[1]
         for _ in range(tests_count):
             performance_memory, vals = memory_usage(
-                (z, (batch[0], batch[1])),
+                (z, (batch[0], batch_1)),
                 retval=True
             )
             occurrences, performance_time = vals
@@ -23,7 +23,7 @@ def performance_testing(data: Sequence, tests_count: int):
             )
         results_times.append(times_of_batch)
         results_memories.append(memories_of_batch)
-    return results_times, results_memories, occurrences
+    return [results_times, results_memories, occurrences]
 
 
 def z(pattern: str, query: str) -> Tuple:
@@ -46,4 +46,4 @@ def z(pattern: str, query: str) -> Tuple:
         if len(pattern) == z_list[i]:
             result.append(i - len(pattern) - 1)
     end = perf_counter()
-    return result, end - start
+    return [result, end - start]

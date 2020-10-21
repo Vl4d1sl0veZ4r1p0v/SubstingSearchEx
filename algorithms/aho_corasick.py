@@ -22,7 +22,7 @@ def performance_testing(data: Sequence, tests_count: int):
             )
         results_times.append(times_of_batch)
         results_memories.append(memories_of_batch)
-    return results_times, results_memories, occurrences
+    return [results_times, results_memories, occurrences]
 
 
 class BohrVertex:
@@ -139,4 +139,4 @@ def aho_corasick(pattern: str, query: str):
         ahck.add_string_to_bohr(pattern)
         results = ahck.find_all_positions(query)
     end = perf_counter()
-    return results, end - start
+    return [results, end - start]

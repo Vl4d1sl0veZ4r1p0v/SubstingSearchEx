@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from manager import check_arguments_first_experiment
 from manager import check_arguments_second_experiment
@@ -59,10 +60,9 @@ def test_first_experiment_works():
     ])
     results_times, _ = first_experiment(
         parsed_arguments=parsed_arguments,
-        sparce_=1_000
     )
     results_times = np.array(results_times)
-    assert results_times.shape == (1, 8, 5)
+    assert results_times.shape == (1, 1, 5)
 
 
 def test_second_experiment_works():

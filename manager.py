@@ -46,7 +46,7 @@ def check_arguments_second_experiment(tests_count,
     return False
 
 
-def first_experiment(parsed_arguments, sparce_):
+def first_experiment(parsed_arguments):
     tests_count = parsed_arguments.c
     algorithms_names = parsed_arguments.a
     text_filename = parsed_arguments.t
@@ -64,7 +64,7 @@ def first_experiment(parsed_arguments, sparce_):
         all_data = list(data_best.generate(maxlength,
                                            substring,
                                            text_filename,
-                                           sparce=sparce_))
+                                           sparce=5_000))
         for algorithm in algorithms_names:
             algorithm_tester = globals()[algorithm].performance_testing
             results_times_of_algorithm, results_memory_of_algorithm, _ = \

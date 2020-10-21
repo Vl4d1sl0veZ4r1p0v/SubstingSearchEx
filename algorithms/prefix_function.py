@@ -10,10 +10,10 @@ def performance_testing(data: Sequence, tests_count: int):
     for batch in data:
         times_of_batch = []
         memories_of_batch = []
-        batch[1] = batch[0] + '#' + batch[1]
+        batch_1 = batch[0] + '#' + batch[1]
         for _ in range(tests_count):
             performance_memory, vals = memory_usage(
-                (prefix, (batch[0], batch[1])),
+                (prefix, (batch[0], batch_1)),
                 retval=True
             )
             occurrences, performance_time = vals
@@ -23,7 +23,7 @@ def performance_testing(data: Sequence, tests_count: int):
             )
         results_times.append(times_of_batch)
         results_memories.append(memories_of_batch)
-    return results_times, results_memories, occurrences
+    return [results_times, results_memories, occurrences]
 
 
 def prefix(pattern: str, query: str):
@@ -44,4 +44,4 @@ def prefix(pattern: str, query: str):
         if p_list[i] == len(pattern):
             result.append(i - 2 * len(pattern))
     end = perf_counter()
-    return result, end - start
+    return [result, end - start]

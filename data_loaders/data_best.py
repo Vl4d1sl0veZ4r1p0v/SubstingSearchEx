@@ -5,4 +5,4 @@ def generate(max_lenght: int, substring: str, text_filename: str, sparce: int):
         for i in range(1, max_amount + 1):
             amount = i * sparce
             text_for_search = text[:amount]
-            yield substring, text_for_search
+            yield [substring, text_for_search]

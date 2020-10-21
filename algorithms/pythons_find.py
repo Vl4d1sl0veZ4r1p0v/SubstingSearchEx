@@ -24,7 +24,7 @@ def performance_testing(data, tests_count: int):
             )
         results_times.append(times_of_batch)
         results_memories.append(memories_of_batch)
-    return results_times, results_memories, occurrences
+    return [results_times, results_memories, occurrences]
 
 
 def pythons_find_(pattern: str, query: str):
@@ -36,4 +36,4 @@ def pythons_find_(pattern: str, query: str):
         result.append(occurence)
         occurence = query.find(pattern, occurence + 1)
     end = perf_counter()
-    return result, end - start
+    return [result, end - start]

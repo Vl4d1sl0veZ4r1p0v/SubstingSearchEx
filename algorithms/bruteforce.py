@@ -24,7 +24,7 @@ def performance_testing(data: Sequence, tests_count: int):
             )
         results_times.append(times_of_batch)
         results_memories.append(memories_of_batch)
-    return results_times, results_memories, occurrences
+    return [results_times, results_memories, occurrences]
 
 
 def performance_testing_occurences_by_length(
@@ -52,4 +52,4 @@ def bruteforce(pattern: str, query: str):
                 result.append(i - len(pattern) + 1)
                 current_progress = 0
     end = perf_counter()
-    return result, end - start
+    return [result, end - start]
